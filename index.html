@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Words - 小学英语单词学习</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Zcool+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', 'Zcool KuaiLe', sans-serif;
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE4B5 50%, #FFDAB9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,159,67,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(72,219,251,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(20px) rotate(10deg); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-family: 'Zcool KuaiLe', cursive;
+            font-size: 3rem;
+            color: #FF9F43;
+            text-shadow: 3px 3px 0 #FF6B6B, 5px 5px 0 rgba(0,0,0,0.1);
+            letter-spacing: 5px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo span {
+            color: #48DBFB;
+        }
+
+        .progress-bar {
+            background: white;
+            border-radius: 25px;
+            padding: 10px 20px;
+            display: inline-block;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-text {
+            font-size: 1.1rem;
+            color: #2D3436;
+            font-weight: 500;
+        }
+
+        .unit-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .unit-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+
+        .unit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+        }
+
+        .unit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .unit-btn.active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .unit-1 { background: #FF9F43; color: white; }
+        .unit-2 { background: #48DBFB; color: white; }
+        .unit-3 { background: #FF6B6B; color: white; }
+        .unit-4 { background: #A29BFE; color: white; }
+        .unit-5 { background: #00B894; color: white; }
+        .unit-6 { background: #FDCB6E; color: #2D3436; }
+
+        .word-card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1), 0 0 0 5px rgba(255,159,67,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .word-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #FF9F43, #FF6B6B, #48DBFB, #A29BFE, #00B894);
+        }
+
+        .word-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-word {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #FF9F43;
+            text-shadow: 2px 2px 0 #FFE4B5;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .syllable {
+            font-size: 2rem;
+            color: #48DBFB;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+
+        .phonetic {
+            font-size: 1.3rem;
+            color: #95A5A6;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .meaning-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #A29BFE 0%, #6C5CE7 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(108,92,231,0.3);
+        }
+
+        .sentences-section {
+            margin-top: 30px;
+        }
+
+        .sentences-title {
+            font-size: 1.5rem;
+            color: #2D3436;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .sentences-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #FF9F43;
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        .sentence-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            border-left: 5px solid #48DBFB;
+        }
+
+        .sentence-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .sentence-en {
+            font-size: 1.2rem;
+            color: #2D3436;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .sentence-zh {
+            font-size: 1rem;
+            color: #636E72;
+            font-family: 'Zcool KuaiLe', cursive;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #FF6B6B 0%, #FF9F43 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255,107,107,0.4);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            width: 70px;
+            height: 70px;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:disabled {
+            background: #DFE6E9;
+            color: #B2BEC3;
+            cursor: not-allowed;
+        }
+
+        .nav-prev {
+            background: #FF9F43;
+            color: white;
+        }
+
+        .nav-next {
+            background: #48DBFB;
+            color: white;
+        }
+
+        .word-nav-info {
+            text-align: center;
+            flex: 1;
+        }
+
+        .word-nav-info .current {
+            font-size: 1.2rem;
+            color: #2D3436;
+            font-weight: 600;
+        }
+
+        .word-nav-info .total {
+            font-size: 1rem;
+            color: #95A5A6;
+        }
+
+        .word-selector {
+            position: relative;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .word-selector select {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-family: 'Fredoka', sans-serif;
+            border: 3px solid #A29BFE;
+            border-radius: 25px;
+            background: white;
+            color: #2D3436;
+            cursor: pointer;
+            outline: none;
+            min-width: 200px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .word-selector select:hover {
+            border-color: #6C5CE7;
+        }
+
+        .audio-btn {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            margin-left: 15px;
+            vertical-align: middle;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 0 rgba(0,0,0,0.1);
+        }
+
+        .audio-btn:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .main-word {
+                font-size: 2.5rem;
+            }
+
+            .syllable {
+                font-size: 1.5rem;
+            }
+
+            .meaning-badge {
+                font-size: 1.2rem;
+                padding: 10px 20px;
+            }
+
+            .word-card {
+                padding: 25px;
+            }
+
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .sentence-en {
+                font-size: 1rem;
+            }
+
+            .unit-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .decoration {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.3;
+            animation: rotate 10s linear infinite;
+        }
+
+        .decoration-1 {
+            top: 20px;
+            right: 20px;
+        }
+
+        .decoration-2 {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #95A5A6;
+            font-size: 0.9rem;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: #00B894;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">Happy <span>Words</span></h1>
+            <div class="progress-bar">
+                <span class="progress-text" id="progressText">单词 1 / 133</span>
+            </div>
+        </header>
+
+        <nav class="unit-nav" id="unitNav">
+            <button class="unit-btn unit-1 active" data-unit="0">Unit 1</button>
+            <button class="unit-btn unit-2" data-unit="1">Unit 2</button>
+            <button class="unit-btn unit-3" data-unit="2">Unit 3</button>
+            <button class="unit-btn unit-4" data-unit="3">Unit 4</button>
+            <button class="unit-btn unit-5" data-unit="4">Unit 5</button>
+            <button class="unit-btn unit-6" data-unit="5">Unit 6</button>
+        </nav>
+
+        <main class="word-card" id="wordCard">
+            <div class="decoration decoration-1">⭐</div>
+            <div class="decoration decoration-2">✏️</div>
+
+            <div class="word-display">
+                <div class="main-word" id="mainWord">Cooper</div>
+                <div class="syllable" id="syllable">Coo-per</div>
+                <div class="phonetic" id="phonetic">/ˈkuːpər/</div>
+                <div style="display: inline-flex; align-items: center;">
+                    <span class="meaning-badge" id="meaning">库珀（人名）</span>
+                    <button class="audio-btn" id="audioBtn" title="播放读音">🔊</button>
+                </div>
+            </div>
+
+            <div class="sentences-section">
+                <h3 class="sentences-title">例句</h3>
+                <div id="sentencesList"></div>
+            </div>
+        </main>
+
+        <nav class="navigation">
+            <button class="nav-btn nav-prev" id="prevBtn" disabled>◀</button>
+            <div class="word-nav-info">
+                <span class="current" id="currentWordNum">1</span>
+                <span class="total"> / 133</span>
+            </div>
+            <button class="nav-btn nav-next" id="nextBtn">▶</button>
+        </nav>
+
+        <div class="word-selector">
+            <select id="wordSelector">
+                <option value="">选择单词...</option>
+            </select>
+        </div>
+
+        <footer class="footer">
+            <p>❤️ 每天学单词，进步看得见！ ❤️</p>
+        </footer>
+    </div>
+
+    <script>
+        const vocabularyData = {
+  "units": [
+    {
+      "name": "Unit 1 Hello!",
+      "categories": [
+        {
+          "name": "characters",
+          "words": [
+            {"id": 1, "word": "Cooper", "syllables": "Coo-per", "phonetic": "/ˈkuːpər/", "meaning": "库珀（人名）", "sentences": [{"en": "Cooper is my best friend.", "zh": "库珀是我最好的朋友。"}, {"en": "Look, Cooper has a new pencil case.", "zh": "看，库珀有一个新的铅笔盒。"}, {"en": "Cooper likes to play tag after school.", "zh": "库珀喜欢放学后玩捉人游戏。"}, {"en": "I sit next to Cooper in class.", "zh": "上课时我坐在库珀旁边。"}, {"en": "Cooper helped me clean up.", "zh": "库珀帮我整理东西。"}]},
+            {"id": 2, "word": "Elise", "syllables": "E-lise", "phonetic": "/ɪˈliːz/", "meaning": "伊丽莎（人名）", "sentences": [{"en": "Elise reads books every day.", "zh": "伊丽莎每天读书。"}, {"en": "Can you give this note to Elise?", "zh": "你能把这张便条给伊丽莎吗？"}, {"en": "Elise drew a rainbow for me.", "zh": "伊丽莎为我画了一道彩虹。"}, {"en": "I saw Elise at the park yesterday.", "zh": "昨天我在公园看到伊丽莎。"}, {"en": "Elise has a cute little cat.", "zh": "伊丽莎有一只可爱的小猫。"}]},
+            {"id": 3, "word": "Fleet", "syllables": "Fleet", "phonetic": "/fliːt/", "meaning": "弗利特（人名）", "sentences": [{"en": "Fleet runs very fast.", "zh": "弗利特跑得非常快。"}, {"en": "Did you see Fleet's new shoes?", "zh": "你看到弗利特的新鞋子了吗？"}, {"en": "Fleet shared his lunch with me.", "zh": "弗利特和我分享了他的午餐。"}, {"en": "Let's ask Fleet to play with us.", "zh": "让我们邀请弗利特一起玩吧。"}, {"en": "Fleet's favorite color is blue.", "zh": "弗利特最喜欢的颜色是蓝色。"}]},
+            {"id": 4, "word": "Mo", "syllables": "Mo", "phonetic": "/moʊ/", "meaning": "莫（人名）", "sentences": [{"en": "Mo tells funny jokes.", "zh": "莫讲有趣的笑话。"}, {"en": "Mo has a red backpack.", "zh": "莫有一个红色的背包。"}, {"en": "I played with Mo at recess.", "zh": "课间休息时我和莫一起玩。"}, {"en": "Mo loves to eat apples.", "zh": "莫喜欢吃苹果。"}, {"en": "Mo drew a funny face on the board.", "zh": "莫在黑板上画了一张搞笑的脸。"}]},
+            {"id": 5, "word": "Tom Thunder", "syllables": "Tom Thun-der", "phonetic": "/tɒm ˈθʌndər/", "meaning": "汤姆·桑德（人名）", "sentences": [{"en": "Tom Thunder has a loud voice.", "zh": "汤姆·桑德声音很大。"}, {"en": "Everyone likes Tom Thunder.", "zh": "大家都喜欢汤姆·桑德。"}, {"en": "Tom Thunder helped me tie my shoes.", "zh": "汤姆·桑德帮我系鞋带。"}, {"en": "Look, Tom Thunder is waving at us.", "zh": "看，汤姆·桑德在向我们挥手。"}, {"en": "Tom Thunder's laugh is big and happy.", "zh": "汤姆·桑德的笑声又大又开心。"}]}
+          ]
+        },
+        {
+          "name": "greetings",
+          "words": [
+            {"id": 6, "word": "Bye", "syllables": "Bye", "phonetic": "/baɪ/", "meaning": "再见", "sentences": [{"en": "Bye, see you later!", "zh": "再见，回头见！"}, {"en": "She waved and said, \"Bye!\"", "zh": "她挥挥手说：“再见！”"}, {"en": "Bye, have a nice day.", "zh": "再见，祝你有美好的一天。"}, {"en": "He smiled and whispered, \"Bye.\"", "zh": "他微笑着轻声说：“再见。”"}, {"en": "Bye, don't forget your hat.", "zh": "再见，别忘了你的帽子。"}]},
+            {"id": 7, "word": "Goodbye", "syllables": "Good-bye", "phonetic": "/ˌɡʊdˈbaɪ/", "meaning": "再见", "sentences": [{"en": "Goodbye, see you tomorrow.", "zh": "再见，明天见。"}, {"en": "She hugged her mom and said goodbye.", "zh": "她拥抱妈妈并说了再见。"}, {"en": "Goodbye, my friend, have fun.", "zh": "再见，我的朋友，玩得开心。"}, {"en": "He waved goodbye from the bus.", "zh": "他从公交车上挥手告别。"}, {"en": "Goodbye, see you at the party.", "zh": "再见，派对上见。"}]},
+            {"id": 8, "word": "Hello", "syllables": "Hel-lo", "phonetic": "/həˈloʊ/", "meaning": "你好", "sentences": [{"en": "Hello, how are you today?", "zh": "你好，今天好吗？"}, {"en": "She smiled and said hello.", "zh": "她微笑着说你好。"}, {"en": "Hello, everyone, let's play.", "zh": "大家好，我们一起玩吧。"}, {"en": "A happy hello starts the day.", "zh": "开心的问候开启美好的一天。"}, {"en": "Hello, little bird on the tree.", "zh": "你好，树上的小鸟。"}]},
+            {"id": 9, "word": "Hey", "syllables": "Hey", "phonetic": "/heɪ/", "meaning": "嘿（打招呼）", "sentences": [{"en": "Hey, wait for me!", "zh": "嘿，等一下我！"}, {"en": "Hey, that's a cool hat.", "zh": "嘿，那帽子真酷。"}, {"en": "Hey, look at this bug.", "zh": "嘿，看这只虫子。"}, {"en": "She called, \"Hey, come here!\"", "zh": "她喊道：“嘿，过来！”"}, {"en": "Hey, let's build a fort.", "zh": "嘿，我们一起搭个堡垒吧。"}]},
+            {"id": 10, "word": "Hi", "syllables": "Hi", "phonetic": "/haɪ/", "meaning": "你好", "sentences": [{"en": "Hi, I'm new here.", "zh": "你好，我是新来的。"}, {"en": "Hi, can I sit with you?", "zh": "你好，我可以坐在你旁边吗？"}, {"en": "She gave a little wave and said hi.", "zh": "她轻轻挥手说你好。"}, {"en": "Hi, Mom, I'm back!", "zh": "你好，妈妈，我回来了！"}, {"en": "Hi, friends, ready to play?", "zh": "你好朋友们，准备好一起玩了吗？"}]}
+          ]
+        },
+        {
+          "name": "instructions",
+          "words": [
+            {"id": 11, "word": "Be quiet", "syllables": "Be qui-et", "phonetic": "/biː ˈkwaɪət/", "meaning": "安静", "sentences": [{"en": "Be quiet, the baby sleeps.", "zh": "安静点，宝宝在睡觉。"}, {"en": "The teacher said, \"Please be quiet.\"", "zh": "老师说：“请安静。”"}, {"en": "Be quiet and listen to the birds.", "zh": "安静下来，听听鸟叫声。"}, {"en": "He put his finger to his lips: \"Be quiet.\"", "zh": "他把手指放在嘴边：“安静。”"}, {"en": "Be quiet for just one minute.", "zh": "请安静一分钟。"}]},
+            {"id": 12, "word": "Listen", "syllables": "Lis-ten", "phonetic": "/ˈlɪsən/", "meaning": "听", "sentences": [{"en": "Listen to the wind blow.", "zh": "听，风在吹。"}, {"en": "Listen, can you hear the rain?", "zh": "听，你能听到雨声吗？"}, {"en": "She said, \"Listen, that's a dog.\"", "zh": "她说：“听，那是狗叫声。”"}, {"en": "Listen to your teacher.", "zh": "听老师的话。"}, {"en": "Listen, the bell is ringing.", "zh": "听，铃声响了。"}]},
+            {"id": 13, "word": "Raise your hand", "syllables": "Raise your hand", "phonetic": "/reɪz jɔːr hænd/", "meaning": "举手", "sentences": [{"en": "Raise your hand if you know.", "zh": "如果你知道就举手。"}, {"en": "Don't shout, just raise your hand.", "zh": "不要喊，举手就好。"}, {"en": "She raised her hand to ask a question.", "zh": "她举手提问。"}, {"en": "Raise your hand if you like pizza.", "zh": "如果你喜欢披萨就举手。"}, {"en": "The boy raised his hand high.", "zh": "那个男孩把手举得高高的。"}]},
+            {"id": 14, "word": "Sit down", "syllables": "Sit down", "phonetic": "/sɪt daʊn/", "meaning": "坐下", "sentences": [{"en": "Please sit down and rest.", "zh": "请坐下来休息一下。"}, {"en": "Sit down, let's read a book.", "zh": "坐下来，我们一起读书吧。"}, {"en": "He found a chair and sat down.", "zh": "他找了一把椅子坐了下来。"}, {"en": "Sit down and eat your lunch.", "zh": "坐下来吃午饭。"}, {"en": "She sat down on the soft grass.", "zh": "她坐在柔软的草地上。"}]},
+            {"id": 15, "word": "Stand up", "syllables": "Stand up", "phonetic": "/stænd ʌp/", "meaning": "起立", "sentences": [{"en": "Stand up and stretch high.", "zh": "站起来，向上伸展。"}, {"en": "When the music plays, stand up.", "zh": "音乐响起时，站起来。"}, {"en": "He stood up to say hello.", "zh": "他站起来打招呼。"}, {"en": "Stand up straight and tall.", "zh": "站直并挺胸。"}, {"en": "Stand up, it's time to go.", "zh": "起来了，该走了。"}]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Unit 2 Clora's Class",
+      "categories": [
+        {
+          "name": "classroom verbs",
+          "words": [
+            {"id": 16, "word": "cut", "syllables": "cut", "phonetic": "/kʌt/", "meaning": "剪，切", "sentences": [{"en": "Cut the paper in half.", "zh": "把纸剪成两半。"}, {"en": "She cut out a star shape.", "zh": "她剪了一个星星形状。"}, {"en": "Be careful when you cut.", "zh": "剪的时候小心点。"}, {"en": "He cut a piece of apple.", "zh": "他切了一块苹果。"}, {"en": "Cut along the dotted line.", "zh": "沿着虚线剪。"}]},
+            {"id": 17, "word": "close", "syllables": "close", "phonetic": "/kloʊz/", "meaning": "关闭", "sentences": [{"en": "Close your book, please.", "zh": "请合上你的书。"}, {"en": "Close the door, it's cold.", "zh": "关上门， 很冷。"}, {"en": "She closed her eyes to sleep.", "zh": "她闭上眼睛睡觉。"}, {"en": "Close the box when you're done.", "zh": "完成后把盒子盖上。"}, {"en": "He closed his notebook gently.", "zh": "他轻轻地合上笔记本。"}]},
+            {"id": 18, "word": "draw", "syllables": "draw", "phonetic": "/drɔː/", "meaning": "画", "sentences": [{"en": "Draw a happy face.", "zh": "画一个笑脸。"}, {"en": "She likes to draw cats.", "zh": "她喜欢画猫。"}, {"en": "Can you draw a tree?", "zh": "你能画一棵树吗？"}, {"en": "He drew a big sun.", "zh": "他画了一个大太阳。"}, {"en": "Draw a picture for me.", "zh": "为我画一幅画吧。"}]},
+            {"id": 19, "word": "fold", "syllables": "fold", "phonetic": "/foʊld/", "meaning": "折叠", "sentences": [{"en": "Fold the paper in half.", "zh": "把纸对折。"}, {"en": "She folded her shirt neatly.", "zh": "她叠得整整齐齐。"}, {"en": "Fold the corners together.", "zh": "把角折在一起。"}, {"en": "He folded the note carefully.", "zh": "他仔细地折好便条。"}, {"en": "Fold it like a fan.", "zh": "像扇子一样折起来。"}]},
+            {"id": 20, "word": "open", "syllables": "o-pen", "phonetic": "/ˈoʊpən/", "meaning": "打开", "sentences": [{"en": "Open your book to page one.", "zh": "把书翻到第一页。"}, {"en": "She opened the window wide.", "zh": "她把窗户开得大大的。"}, {"en": "Open the door, please.", "zh": "请开门。"}, {"en": "He opened his lunch box.", "zh": "他打开午餐盒。"}, {"en": "Open your eyes and look.", "zh": "睁开眼睛看。"}]},
+            {"id": 21, "word": "color", "syllables": "col-or", "phonetic": "/ˈkʌlər/", "meaning": "涂色", "sentences": [{"en": "Color the sky blue.", "zh": "把天空涂成蓝色。"}, {"en": "She colored the flower red.", "zh": "她把花涂成红色。"}, {"en": "Use your crayons to color.", "zh": "用蜡笔涂色。"}, {"en": "He colored inside the lines.", "zh": "他在线内涂色。"}, {"en": "Color the picture nicely.", "zh": "把这幅画涂好看。"}]},
+            {"id": 22, "word": "point", "syllables": "point", "phonetic": "/pɔɪnt/", "meaning": "指向", "sentences": [{"en": "Point to the cat.", "zh": "指向那只猫。"}, {"en": "She pointed at the bird.", "zh": "她指着那只鸟。"}, {"en": "Point to your nose.", "zh": "指你的鼻子。"}, {"en": "He pointed to the door.", "zh": "他指向门。"}, {"en": "Point to the word you know.", "zh": "指你知道的那个词。"}]},
+            {"id": 23, "word": "put away", "syllables": "put a-way", "phonetic": "/pʊt əˈweɪ/", "meaning": "收好", "sentences": [{"en": "Put away your toys now.", "zh": "现在把玩具收好。"}, {"en": "She put away her books.", "zh": "她把书收好了。"}, {"en": "Put away your crayons, please.", "zh": "请把蜡笔收好。"}, {"en": "He put away his jacket.", "zh": "他收好了外套。"}, {"en": "Put everything away neatly.", "zh": "把所有东西整齐地收好。"}]},
+            {"id": 24, "word": "stick", "syllables": "stick", "phonetic": "/stɪk/", "meaning": "粘贴", "sentences": [{"en": "Stick the paper here.", "zh": "把纸贴在这里。"}, {"en": "She stuck a star on her work.", "zh": "她在作品上贴了一颗星星。"}, {"en": "Use glue to stick it.", "zh": "用胶水把它粘住。"}, {"en": "He stuck a note on the door.", "zh": "他在门上贴了一张便条。"}, {"en": "Stick the picture in your book.", "zh": "把画贴到你的书里。"}]},
+            {"id": 25, "word": "tidy", "syllables": "ti-dy", "phonetic": "/ˈtaɪdi/", "meaning": "整理", "sentences": [{"en": "Tidy up your desk.", "zh": "整理你的桌子。"}, {"en": "She tidied her room quickly.", "zh": "她很快整理好了房间。"}, {"en": "Let's tidy the classroom.", "zh": "让我们一起整理教室。"}, {"en": "He tidied the bookshelf.", "zh": "他整理了书架。"}, {"en": "Tidy up before you go.", "zh": "走之前整理一下。"}]},
+            {"id": 26, "word": "write", "syllables": "write", "phonetic": "/raɪt/", "meaning": "写", "sentences": [{"en": "Write your name first.", "zh": "先写你的名字。"}, {"en": "She wrote a letter to Mom.", "zh": "她给妈妈写了一封信。"}, {"en": "Write neatly in your book.", "zh": "在你的本子上写整齐。"}, {"en": "He wrote a story about a dog.", "zh": "他写了一个关于狗的故事。"}, {"en": "Write three words you know.", "zh": "写三个你知道的单词。"}]}
+          ]
+        },
+        {
+          "name": "in a classroom",
+          "words": [
+            {"id": 27, "word": "bag", "syllables": "bag", "phonetic": "/bæɡ/", "meaning": "包，袋子", "sentences": [{"en": "My bag is blue.", "zh": "我的包是蓝色的。"}, {"en": "She put her book in her bag.", "zh": "她把书放进包里。"}, {"en": "His bag is heavy.", "zh": "他的包很重。"}, {"en": "I have a new bag.", "zh": "我有一个新包。"}, {"en": "Don't forget your bag.", "zh": "别忘了你的包。"}]},
+            {"id": 28, "word": "board", "syllables": "board", "phonetic": "/bɔːrd/", "meaning": "黑板", "sentences": [{"en": "The teacher writes on the board.", "zh": "老师在黑板上写字。"}, {"en": "Look at the board, please.", "zh": "请看黑板。"}, {"en": "She erased the board.", "zh": "她擦掉了黑板。"}, {"en": "There is a picture on the board.", "zh": "黑板上有一幅画。"}, {"en": "He pointed to the board.", "zh": "他指向黑板。"}]},
+            {"id": 29, "word": "book", "syllables": "book", "phonetic": "/bʊk/", "meaning": "书", "sentences": [{"en": "I like to read books.", "zh": "我喜欢读书。"}, {"en": "She opened her book.", "zh": "她打开了书。"}, {"en": "This book is funny.", "zh": "这本书很有趣。"}, {"en": "He has a new book.", "zh": "他有一本新书。"}, {"en": "Put the book on the shelf.", "zh": "把书放在架子上。"}]},
+            {"id": 30, "word": "chair", "syllables": "chair", "phonetic": "/tʃer/", "meaning": "椅子", "sentences": [{"en": "Sit on your chair.", "zh": "坐在你的椅子上。"}, {"en": "Her chair is red.", "zh": "她的椅子是红色的。"}, {"en": "He pushed in his chair.", "zh": "他把椅子推进去了。"}, {"en": "There is a book under the chair.", "zh": "椅子下面有一本书。"}, {"en": "Please stand behind your chair.", "zh": "请站在椅子后面。"}]},
+            {"id": 31, "word": "classroom", "syllables": "class-room", "phonetic": "/ˈklæsruːm/", "meaning": "教室", "sentences": [{"en": "Our classroom is big.", "zh": "我们的教室很大。"}, {"en": "She cleaned the classroom.", "zh": "她打扫了教室。"}, {"en": "Welcome to our classroom.", "zh": "欢迎来到我们的教室。"}, {"en": "The classroom has yellow walls.", "zh": "教室的墙壁是黄色的。"}, {"en": "We learn in the classroom.", "zh": "我们在教室里学习。"}]},
+            {"id": 32, "word": "desk", "syllables": "desk", "phonetic": "/desk/", "meaning": "桌子", "sentences": [{"en": "My desk is tidy.", "zh": "我的桌子很整齐。"}, {"en": "She put her pencil on the desk.", "zh": "她把铅笔放在桌上。"}, {"en": "He cleaned his desk.", "zh": "他擦干净了桌子。"}, {"en": "There is a sticker on the desk.", "zh": "桌上有一个贴纸。"}, {"en": "Sit at your desk, please.", "zh": "请坐在你的桌位上。"}]},
+            {"id": 33, "word": "door", "syllables": "door", "phonetic": "/dɔːr/", "meaning": "门", "sentences": [{"en": "Please close the door.", "zh": "请关门。"}, {"en": "She knocked on the door.", "zh": "她敲门。"}, {"en": "The door is open.", "zh": "门开着。"}, {"en": "He walked through the door.", "zh": "他穿过门。"}, {"en": "There is a sign on the door.", "zh": "门上有一个标志。"}]},
+            {"id": 34, "word": "eraser", "syllables": "e-ra-ser", "phonetic": "/ɪˈreɪsər/", "meaning": "橡皮擦", "sentences": [{"en": "I need an eraser.", "zh": "我需要一块橡皮。"}, {"en": "Her eraser is pink.", "zh": "她的橡皮是粉红色的。"}, {"en": "He dropped his eraser.", "zh": "他掉了橡皮。"}, {"en": "Use the eraser to fix it.", "zh": "用橡皮来修改。"}, {"en": "The eraser is small.", "zh": "橡皮很小。"}]},
+            {"id": 35, "word": "glue", "syllables": "glue", "phonetic": "/ɡluː/", "meaning": "胶水", "sentences": [{"en": "Use glue to stick it.", "zh": "用胶水把它粘住。"}, {"en": "She put glue on the paper.", "zh": "她把胶水涂在纸上。"}, {"en": "The glue is sticky.", "zh": "胶水很粘。"}, {"en": "He closed the glue bottle.", "zh": "他盖上了胶水瓶。"}, {"en": "Don't spill the glue.", "zh": "别把胶水洒了。"}]},
+            {"id": 36, "word": "pen", "syllables": "pen", "phonetic": "/pen/", "meaning": "钢笔", "sentences": [{"en": "I write with a pen.", "zh": "我用钢笔写字。"}, {"en": "Her pen is blue.", "zh": "她的钢笔是蓝色的。"}, {"en": "He lost his pen.", "zh": "他丢了钢笔。"}, {"en": "This pen writes well.", "zh": "这枝钢笔很好写。"}, {"en": "Can I borrow your pen?", "zh": "我能借你的钢笔吗？"}]},
+            {"id": 37, "word": "pencil", "syllables": "pen-cil", "phonetic": "/ˈpensəl/", "meaning": "铅笔", "sentences": [{"en": "Sharpen your pencil.", "zh": "削好你的铅笔。"}, {"en": "She has a yellow pencil.", "zh": "她有一枝黄色的铅笔。"}, {"en": "He dropped his pencil.", "zh": "他掉了铅笔。"}, {"en": "Use a pencil to draw.", "zh": "用铅笔画画。"}, {"en": "I have two pencils.", "zh": "我有两枝铅笔。"}]},
+            {"id": 38, "word": "paper", "syllables": "pa-per", "phonetic": "/ˈpeɪpər/", "meaning": "纸", "sentences": [{"en": "Draw on the paper.", "zh": "在纸上画画。"}, {"en": "She folded the paper.", "zh": "她折了纸。"}, {"en": "He cut the paper.", "zh": "他剪了纸。"}, {"en": "This paper is white.", "zh": "这张纸是白色的。"}, {"en": "I need a piece of paper.", "zh": "我需要一张纸。"}]},
+            {"id": 39, "word": "ruler", "syllables": "ru-ler", "phonetic": "/ˈruːlər/", "meaning": "尺子", "sentences": [{"en": "Measure with a ruler.", "zh": "用尺子量。"}, {"en": "Her ruler is 30 centimeters.", "zh": "她的尺子有30厘米长。"}, {"en": "He drew a line with a ruler.", "zh": "他用尺子画了一条线。"}, {"en": "The ruler is on the desk.", "zh": "尺子在桌上。"}, {"en": "I have a new ruler.", "zh": "我有一把新尺子。"}]},
+            {"id": 40, "word": "scissors", "syllables": "cis-sors", "phonetic": "/ˈsɪzərz/", "meaning": "剪刀", "sentences": [{"en": "Cut with scissors.", "zh": "用剪刀剪。"}, {"en": "Be careful with scissors.", "zh": "用剪刀要小心。"}, {"en": "She used scissors to cut paper.", "zh": "她用剪刀剪纸。"}, {"en": "The scissors are sharp.", "zh": "剪刀很锋利。"}, {"en": "Put the scissors away.", "zh": "把剪刀收好。"}]},
+            {"id": 41, "word": "shoes", "syllables": "shoes", "phonetic": "/ʃuːz/", "meaning": "鞋子", "sentences": [{"en": "Tie your shoes.", "zh": "系好你的鞋带。"}, {"en": "Her shoes are pink.", "zh": "她的鞋子是粉红色的。"}, {"en": "He put on his shoes.", "zh": "他穿上了鞋子。"}, {"en": "These shoes are new.", "zh": "这双鞋子是新的。"}, {"en": "Take off your shoes.", "zh": "脱掉你的鞋子。"}]},
+            {"id": 42, "word": "student", "syllables": "stu-dent", "phonetic": "/ˈstuːdənt/", "meaning": "学生", "sentences": [{"en": "She is a good student.", "zh": "她是一个好学生。"}, {"en": "The students are reading.", "zh": "学生们正在读书。"}, {"en": "He is a new student.", "zh": "他是一个新学生。"}, {"en": "All students raise their hands.", "zh": "所有学生都举手。"}, {"en": "The student smiled at me.", "zh": "那个学生对我微笑。"}]},
+            {"id": 43, "word": "teacher", "syllables": "tea-cher", "phonetic": "/ˈtiːtʃər/", "meaning": "老师", "sentences": [{"en": "The teacher helps us.", "zh": "老师帮助我们。"}, {"en": "Our teacher is kind.", "zh": "我们的老师很亲切。"}, {"en": "She is a math teacher.", "zh": "她是一位数学老师。"}, {"en": "The teacher writes on the board.", "zh": "老师在黑板上写字。"}, {"en": "Thank you, teacher.", "zh": "谢谢老师。"}]},
+            {"id": 44, "word": "trash can", "syllables": "trash can", "phonetic": "/træʃ kæn/", "meaning": "垃圾桶", "sentences": [{"en": "Throw it in the trash can.", "zh": "把它扔进垃圾桶。"}, {"en": "The trash can is full.", "zh": "垃圾桶满了。"}, {"en": "She put the paper in the trash can.", "zh": "她把纸放进垃圾桶。"}, {"en": "Please empty the trash can.", "zh": "请倒掉垃圾桶。"}, {"en": "The trash can is blue.", "zh": "垃圾桶是蓝色的。"}]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Unit 3 Head to Toe",
+      "categories": [
+        {
+          "name": "body parts",
+          "words": [
+            {"id": 45, "word": "arm", "syllables": "arm", "phonetic": "/ɑːrm/", "meaning": "手臂", "sentences": [{"en": "My arm is strong.", "zh": "我的手臂很强壮。"}, {"en": "She hurt her arm.", "zh": "她伤到了手臂。"}, {"en": "Raise your arm up high.", "zh": "把手臂举高。"}, {"en": "He has a watch on his arm.", "zh": "他手上戴着手表。"}, {"en": "The baby has tiny arms.", "zh": "婴儿有小小的手臂。"}]},
+            {"id": 46, "word": "ears", "syllables": "ears", "phonetic": "/ɪrz/", "meaning": "耳朵", "sentences": [{"en": "My ears are cold.", "zh": "我的耳朵很冷。"}, {"en": "Elephants have big ears.", "zh": "大象有大大的耳朵。"}, {"en": "Cover your ears, it's loud.", "zh": "捂住耳朵，太吵了。"}, {"en": "She has earrings on her ears.", "zh": "她耳朵上戴着耳环。"}, {"en": "I hear with my ears.", "zh": "我用耳朵听声音。"}]},
+            {"id": 47, "word": "eyes", "syllables": "eyes", "phonetic": "/aɪz/", "meaning": "眼睛", "sentences": [{"en": "Close your eyes and sleep.", "zh": "闭上眼睛睡觉。"}, {"en": "She has blue eyes.", "zh": "她有蓝色的眼睛。"}, {"en": "I see with my eyes.", "zh": "我用眼睛看东西。"}, {"en": "His eyes are big and brown.", "zh": "他的眼睛又大又棕色。"}, {"en": "Open your eyes wide.", "zh": "睁开眼睛。"}]},
+            {"id": 48, "word": "foot", "syllables": "foot", "phonetic": "/fʊt/", "meaning": "脚", "sentences": [{"en": "I hurt my foot.", "zh": "我伤到了脚。"}, {"en": "She put one foot forward.", "zh": "她向前迈了一只脚。"}, {"en": "My foot is in the water.", "zh": "我的脚在水里。"}, {"en": "He has a sock on one foot.", "zh": "他一只脚穿着袜子。"}, {"en": "The dog licked my foot.", "zh": "狗舔了我的脚。"}]},
+            {"id": 49, "word": "hair", "syllables": "hair", "phonetic": "/her/", "meaning": "头发", "sentences": [{"en": "She has long hair.", "zh": "她有长头发。"}, {"en": "I brush my hair every day.", "zh": "我每天梳头。"}, {"en": "His hair is curly.", "zh": "他的头发是卷曲的。"}, {"en": "My mom has brown hair.", "zh": "我妈妈有棕色的头发。"}, {"en": "Don't pull my hair.", "zh": "别扯我的头发。"}]},
+            {"id": 50, "word": "hand", "syllables": "hand", "phonetic": "/hænd/", "meaning": "手", "sentences": [{"en": "Wash your hands.", "zh": "洗手。"}, {"en": "She raised her hand.", "zh": "她举手。"}, {"en": "He hurt his hand.", "zh": "他伤到了手。"}, {"en": "Hold my hand, please.", "zh": "请牵我的手。"}, {"en": "I write with my right hand.", "zh": "我用右手写字。"}]},
+            {"id": 51, "word": "head", "syllables": "head", "phonetic": "/hed/", "meaning": "头", "sentences": [{"en": "My head hurts.", "zh": "我头疼。"}, {"en": "She nodded her head.", "zh": "她点了点头。"}, {"en": "He has a hat on his head.", "zh": "他头上戴着一顶帽子。"}, {"en": "Shake your head yes or no.", "zh": "摇头或点头。"}, {"en": "The cat rubbed against my head.", "zh": "猫蹭我的头。"}]},
+            {"id": 52, "word": "leg", "syllables": "leg", "phonetic": "/leɡ/", "meaning": "腿", "sentences": [{"en": "My leg is tired.", "zh": "我的腿累了。"}, {"en": "She broke her leg last year.", "zh": "去年她摔断了腿。"}, {"en": "He has long legs.", "zh": "他的腿很长。"}, {"en": "The bug crawled up my leg.", "zh": "虫子爬上了我的腿。"}, {"en": "Stretch your legs out.", "zh": "伸伸腿。"}]},
+            {"id": 53, "word": "mouth", "syllables": "mouth", "phonetic": "/maʊθ/", "meaning": "嘴巴", "sentences": [{"en": "Open your mouth wide.", "zh": "张大嘴巴。"}, {"en": "She has a smile on her mouth.", "zh": "她嘴角带着微笑。"}, {"en": "Cover your mouth when you cough.", "zh": "咳嗽时捂嘴。"}, {"en": "He put food in his mouth.", "zh": "他把食物放进嘴里。"}, {"en": "My mouth is dry.", "zh": "我嘴巴干了。"}]},
+            {"id": 54, "word": "nose", "syllables": "nose", "phonetic": "/noʊz/", "meaning": "鼻子", "sentences": [{"en": "My nose is running.", "zh": "我流鼻涕了。"}, {"en": "She has a small nose.", "zh": "她有一个小鼻子。"}, {"en": "He touched his nose.", "zh": "他摸了摸鼻子。"}, {"en": "I smell flowers with my nose.", "zh": "我用鼻子闻花香。"}, {"en": "The clown has a red nose.", "zh": "小丑有一个红鼻子。"}]},
+            {"id": 55, "word": "neck", "syllables": "neck", "phonetic": "/nek/", "meaning": "脖子", "sentences": [{"en": "My neck is stiff.", "zh": "我的脖子僵硬。"}, {"en": "She wears a necklace on her neck.", "zh": "她脖子上戴着项链。"}, {"en": "The giraffe has a long neck.", "zh": "长颈鹿有长长的脖子。"}, {"en": "He rubbed his neck.", "zh": "他揉了揉脖子。"}, {"en": "The scarf is warm on my neck.", "zh": "围巾让脖子很暖和。"}]}
+          ]
+        },
+        {
+          "name": "numbers",
+          "words": [
+            {"id": 56, "word": "one", "syllables": "one", "phonetic": "/wʌn/", "meaning": "一", "sentences": [{"en": "I have one apple.", "zh": "我有一个苹果。"}, {"en": "One plus one is two.", "zh": "一加一等于二。"}, {"en": "She is one year old.", "zh": "她一岁了。"}, {"en": "There is one dog in the park.", "zh": "公园里有一只狗。"}, {"en": "Pick one card.", "zh": "选一张卡片。"}]},
+            {"id": 57, "word": "two", "syllables": "two", "phonetic": "/tuː/", "meaning": "二", "sentences": [{"en": "I have two hands.", "zh": "我有两只手。"}, {"en": "She has two cats.", "zh": "她有两只猫。"}, {"en": "Two birds sit on the fence.", "zh": "两只鸟坐在篱笆上。"}, {"en": "We need two more chairs.", "zh": "我们还需要两把椅子。"}, {"en": "Count to two.", "zh": "数到二。"}]},
+            {"id": 58, "word": "three", "syllables": "three", "phonetic": "/θriː/", "meaning": "三", "sentences": [{"en": "I am three years old.", "zh": "我三岁了。"}, {"en": "She has three pencils.", "zh": "她有三枝铅笔。"}, {"en": "Three ducks swim in the pond.", "zh": "三只鸭子在池塘里游泳。"}, {"en": "We ate three cookies.", "zh": "我们吃了三块饼干。"}, {"en": "The story has three bears.", "zh": "故事里有三只小熊。"}]},
+            {"id": 59, "word": "four", "syllables": "four", "phonetic": "/fɔːr/", "meaning": "四", "sentences": [{"en": "A table has four legs.", "zh": "桌子有四条腿。"}, {"en": "I have four crayons.", "zh": "我有四枝蜡笔。"}, {"en": "She turned four yesterday.", "zh": "昨天她四岁了。"}, {"en": "Four cars are in the driveway.", "zh": "车道上有四辆车。"}, {"en": "There are four seasons.", "zh": "有四个季节。"}]},
+            {"id": 60, "word": "five", "syllables": "five", "phonetic": "/faɪv/", "meaning": "五", "sentences": [{"en": "I have five fingers.", "zh": "我有五根手指。"}, {"en": "She is five years old.", "zh": "她五岁了。"}, {"en": "Five kids are playing.", "zh": "五个孩子在玩。"}, {"en": "Give me five!", "zh": "击掌！"}, {"en": "I ate five grapes.", "zh": "我吃了五颗葡萄。"}]},
+            {"id": 61, "word": "six", "syllables": "six", "phonetic": "/sɪks/", "meaning": "六", "sentences": [{"en": "I am six years old.", "zh": "我六岁了。"}, {"en": "She has six books.", "zh": "她有六本书。"}, {"en": "Six ants walk in a line.", "zh": "六只蚂蚁排成一排走。"}, {"en": "We need six cups.", "zh": "我们需要六个杯子。"}, {"en": "The clock says six o'clock.", "zh": "时钟指向六点。"}]},
+            {"id": 62, "word": "seven", "syllables": "sev-en", "phonetic": "/ˈsevən/", "meaning": "七", "sentences": [{"en": "There are seven days in a week.", "zh": "一周有七天。"}, {"en": "I have seven stickers.", "zh": "我有七张贴纸。"}, {"en": "She is seven now.", "zh": "她现在七岁了。"}, {"en": "Seven birds flew away.", "zh": "七只鸟飞走了。"}, {"en": "Count to seven.", "zh": "数到七。"}]},
+            {"id": 63, "word": "eight", "syllables": "eight", "phonetic": "/eɪt/", "meaning": "八", "sentences": [{"en": "An octopus has eight arms.", "zh": "章鱼有八条腿。"}, {"en": "I am eight years old.", "zh": "我八岁了。"}, {"en": "She ate eight grapes.", "zh": "她吃了八颗葡萄。"}, {"en": "Eight kids are in the class.", "zh": "班里有八个孩子。"}, {"en": "My birthday is on the eighth.", "zh": "我的生日在八号。"}]},
+            {"id": 64, "word": "nine", "syllables": "nine", "phonetic": "/naɪn/", "meaning": "九", "sentences": [{"en": "I have nine crayons.", "zh": "我有九枝蜡笔。"}, {"en": "She is nine years old.", "zh": "她九岁了。"}, {"en": "Nine cats sleep in the sun.", "zh": "九只猫在阳光下睡觉。"}, {"en": "There are nine planets.", "zh": "有九大行星。"}, {"en": "Count to nine.", "zh": "数到九。"}]},
+            {"id": 65, "word": "ten", "syllables": "ten", "phonetic": "/ten/", "meaning": "十", "sentences": [{"en": "I have ten toes.", "zh": "我有十个脚趾。"}, {"en": "She is ten years old.", "zh": "她十岁了。"}, {"en": "Ten pennies make a dime.", "zh": "十个小钱等于一角。"}, {"en": "There are ten kids in line.", "zh": "排队的有十个孩子。"}, {"en": "Count to ten.", "zh": "数到十。"}]}
+          ]
+        },
+        {
+          "name": "colors",
+          "words": [
+            {"id": 66, "word": "black", "syllables": "black", "phonetic": "/blæk/", "meaning": "黑色", "sentences": [{"en": "My cat is black.", "zh": "我的猫是黑色的。"}, {"en": "She wore a black dress.", "zh": "她穿着黑色的连衣裙。"}, {"en": "The night sky is black.", "zh": "夜空是黑色的。"}, {"en": "I like black shoes.", "zh": "我喜欢黑色的鞋子。"}, {"en": "Draw with a black crayon.", "zh": "用黑色蜡笔画画。"}]},
+            {"id": 67, "word": "blond", "syllables": "blond", "phonetic": "/blɒnd/", "meaning": "金黄色", "sentences": [{"en": "She has blond hair.", "zh": "她有金黄色的头发。"}, {"en": "His little brother is blond.", "zh": "他的小弟弟是金发。"}, {"en": "Blond hair shines in the sun.", "zh": "金发在阳光下闪闪发光。"}, {"en": "My doll has blond hair.", "zh": "我的娃娃有金黄色的头发。"}, {"en": "He is tall and blond.", "zh": "他又高又金发。"}]},
+            {"id": 68, "word": "blue", "syllables": "blue", "phonetic": "/bluː/", "meaning": "蓝色", "sentences": [{"en": "The sky is blue.", "zh": "天空是蓝色的。"}, {"en": "My favorite color is blue.", "zh": "我最喜欢的颜色是蓝色。"}, {"en": "She has blue eyes.", "zh": "她有蓝色的眼睛。"}, {"en": "I have a blue backpack.", "zh": "我有一个蓝色的背包。"}, {"en": "The ocean is blue.", "zh": "海洋是蓝色的。"}]},
+            {"id": 69, "word": "brown", "syllables": "brown", "phonetic": "/braʊn/", "meaning": "棕色", "sentences": [{"en": "Bears are brown.", "zh": "熊是棕色的。"}, {"en": "She has brown hair.", "zh": "她有棕色的头发。"}, {"en": "My shoes are brown.", "zh": "我的鞋子是棕色的。"}, {"en": "Chocolate is brown.", "zh": "巧克力是棕色的。"}, {"en": "The tree trunk is brown.", "zh": "树干是棕色的。"}]},
+            {"id": 70, "word": "green", "syllables": "green", "phonetic": "/ɡriːn/", "meaning": "绿色", "sentences": [{"en": "Grass is green.", "zh": "草是绿色的。"}, {"en": "I like green apples.", "zh": "我喜欢青苹果。"}, {"en": "She wore a green hat.", "zh": "她戴着一顶绿色的帽子。"}, {"en": "Frogs are green.", "zh": "青蛙是绿色的。"}, {"en": "Color the leaf green.", "zh": "把叶子涂成绿色。"}]},
+            {"id": 71, "word": "pink", "syllables": "pink", "phonetic": "/pɪŋk/", "meaning": "粉色", "sentences": [{"en": "Pink is a pretty color.", "zh": "粉色是一种漂亮的颜色。"}, {"en": "She has a pink backpack.", "zh": "她有一个粉色的背包。"}, {"en": "Flowers can be pink.", "zh": "花可以是粉色的。"}, {"en": "My favorite sweater is pink.", "zh": "我最喜欢的毛衣是粉色的。"}, {"en": "The pig is pink.", "zh": "小猪是粉色的。"}]},
+            {"id": 72, "word": "red", "syllables": "red", "phonetic": "/red/", "meaning": "红色", "sentences": [{"en": "Apples can be red.", "zh": "苹果可以是红色的。"}, {"en": "She has a red bike.", "zh": "她有一辆红色的自行车。"}, {"en": "Stop signs are red.", "zh": "停止标志是红色的。"}, {"en": "I like red roses.", "zh": "我喜欢红玫瑰。"}, {"en": "My cup is red.", "zh": "我的杯子是红色的。"}]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Unit 4 Getting Dressed",
+      "categories": [
+        {
+          "name": "clothes",
+          "words": [
+            {"id": 73, "word": "cap", "syllables": "cap", "phonetic": "/kæp/", "meaning": "帽子（带帽檐）", "sentences": [{"en": "I wear a cap on sunny days.", "zh": "晴天我戴帽子。"}, {"en": "His cap is blue.", "zh": "他的帽子是蓝色的。"}, {"en": "She put her cap on backwards.", "zh": "她把帽子反着戴。"}, {"en": "Take off your cap inside.", "zh": "进室内脱掉帽子。"}, {"en": "My cap has a star on it.", "zh": "我的帽子上有一颗星星。"}]},
+            {"id": 74, "word": "dress", "syllables": "dress", "phonetic": "/dres/", "meaning": "连衣裙", "sentences": [{"en": "She wore a pretty dress.", "zh": "她穿着漂亮的连衣裙。"}, {"en": "I have a new dress.", "zh": "我有一条新连衣裙。"}, {"en": "Her dress is red and white.", "zh": "她的连衣裙是红白相间的。"}, {"en": "The dress is too long.", "zh": "连衣裙太长了。"}, {"en": "Hang your dress in the closet.", "zh": "把连衣裙挂在衣柜里。"}]},
+            {"id": 75, "word": "hat", "syllables": "hat", "phonetic": "/hæt/", "meaning": "帽子", "sentences": [{"en": "Put on your hat.", "zh": "戴上你的帽子。"}, {"en": "My hat keeps me warm.", "zh": "帽子让我很暖和。"}, {"en": "She has a funny hat.", "zh": "她有一顶有趣的帽子。"}, {"en": "The magician wore a black hat.", "zh": "魔术师戴着一顶黑色的帽子。"}, {"en": "I lost my favorite hat.", "zh": "我丢了最喜欢的帽子。"}]},
+            {"id": 76, "word": "pants", "syllables": "pants", "phonetic": "/pænts/", "meaning": "裤子", "sentences": [{"en": "I need new pants.", "zh": "我需要新裤子。"}, {"en": "His pants are too short.", "zh": "他的裤子太短了。"}, {"en": "She put on her pants.", "zh": "她穿上了裤子。"}, {"en": "These pants are blue.", "zh": "这条裤子是蓝色的。"}, {"en": "Roll up your pants.", "zh": "卷起你的裤子。"}]},
+            {"id": 77, "word": "shirt", "syllables": "shirt", "phonetic": "/ʃɜːrt/", "meaning": "衬衫", "sentences": [{"en": "I like your shirt.", "zh": "我喜欢你的衬衫。"}, {"en": "His shirt has stripes.", "zh": "他的衬衫有条纹。"}, {"en": "She tucked in her shirt.", "zh": "她把衬衫塞进裤子里。"}, {"en": "My shirt is too small.", "zh": "我的衬衫太小了。"}, {"en": "Wear a clean shirt.", "zh": "穿干净的衬衫。"}]},
+            {"id": 78, "word": "skirt", "syllables": "skirt", "phonetic": "/skɜːrt/", "meaning": "裙子", "sentences": [{"en": "She wore a skirt to school.", "zh": "她穿着裙子上学。"}, {"en": "My skirt is pink.", "zh": "我的裙子是粉色的。"}, {"en": "The skirt has flowers on it.", "zh": "裙子上有花。"}, {"en": "Her skirt twirled when she spun.", "zh": "她转圈时裙子飞起来了。"}, {"en": "I have a long skirt.", "zh": "我有一条长裙子。"}]},
+            {"id": 79, "word": "sneakers", "syllables": "snea-kers", "phonetic": "/ˈsniːkərz/", "meaning": "运动鞋", "sentences": [{"en": "I run in my sneakers.", "zh": "我穿着运动鞋跑步。"}, {"en": "Her sneakers are new.", "zh": "她的运动鞋是新的。"}, {"en": "Tie your sneakers tight.", "zh": "系紧运动鞋。"}, {"en": "My sneakers are dirty.", "zh": "我的运动鞋脏了。"}, {"en": "Put on your sneakers for gym.", "zh": "上体育课穿上运动鞋。"}]},
+            {"id": 80, "word": "socks", "syllables": "socks", "phonetic": "/sɒks/", "meaning": "袜子", "sentences": [{"en": "I lost one sock.", "zh": "我丢了一只袜子。"}, {"en": "Her socks have polka dots.", "zh": "她的袜子有点点图案。"}, {"en": "Put on clean socks.", "zh": "穿干净的袜子。"}, {"en": "My feet are cold without socks.", "zh": "不穿袜子脚很冷。"}, {"en": "These socks are soft.", "zh": "这些袜子很柔软。"}]},
+            {"id": 81, "word": "shorts", "syllables": "shorts", "phonetic": "/ʃɔːrts/", "meaning": "短裤", "sentences": [{"en": "I wear shorts in summer.", "zh": "夏天我穿短裤。"}, {"en": "His shorts are blue.", "zh": "他的短裤是蓝色的。"}, {"en": "She put on her shorts.", "zh": "她穿上了短裤。"}, {"en": "These shorts are too big.", "zh": "这条短裤太大了。"}, {"en": "Don't forget your shorts.", "zh": "别忘了你的短裤。"}]},
+            {"id": 82, "word": "T-shirt", "syllables": "T-shirt", "phonetic": "/ˈtiːʃɜːrt/", "meaning": "T恤衫", "sentences": [{"en": "I sleep in a T-shirt.", "zh": "我穿着T恤衫睡觉。"}, {"en": "Her T-shirt says \"Smile\".", "zh": "她的T恤衫上写着“微笑”。"}, {"en": "My favorite T-shirt is green.", "zh": "我最喜欢的T恤衫是绿色的。"}, {"en": "He spilled juice on his T-shirt.", "zh": "他弄脏了T恤衫。"}, {"en": "Fold your T-shirt neatly.", "zh": "叠好你的T恤衫。"}]},
+            {"id": 83, "word": "jeans", "syllables": "jeans", "phonetic": "/dʒiːnz/", "meaning": "牛仔裤", "sentences": [{"en": "I wear jeans every day.", "zh": "我每天穿牛仔裤。"}, {"en": "Her jeans are blue.", "zh": "她的牛仔裤是蓝色的。"}, {"en": "These jeans have pockets.", "zh": "这条牛仔裤有口袋。"}, {"en": "My jeans are old but soft.", "zh": "我的牛仔裤旧了但很柔软。"}, {"en": "Roll up your jeans.", "zh": "卷起你的牛仔裤。"}]}
+          ]
+        },
+        {
+          "name": "adjectives",
+          "words": [
+            {"id": 84, "word": "big", "syllables": "big", "phonetic": "/bɪɡ/", "meaning": "大的", "sentences": [{"en": "I have a big dog.", "zh": "我有一只大狗。"}, {"en": "Her house is big.", "zh": "她的房子很大。"}, {"en": "This pizza is big.", "zh": "这个披萨很大。"}, {"en": "He gave me a big hug.", "zh": "他给了我一个大大的拥抱。"}, {"en": "Big trees give shade.", "zh": "大树可以乘凉。"}]},
+            {"id": 85, "word": "long", "syllables": "long", "phonetic": "/lɔːŋ/", "meaning": "长的", "sentences": [{"en": "She has long hair.", "zh": "她有长头发。"}, {"en": "This road is long.", "zh": "这条路很长。"}, {"en": "I drew a long line.", "zh": "我画了一条长线。"}, {"en": "The snake is long.", "zh": "蛇很长。"}, {"en": "We waited a long time.", "zh": "我们等了很久。"}]},
+            {"id": 86, "word": "short", "syllables": "short", "phonetic": "/ʃɔːrt/", "meaning": "短的", "sentences": [{"en": "He is short.", "zh": "他个子矮。"}, {"en": "My pencil is short.", "zh": "我的铅笔很短。"}, {"en": "She has short hair.", "zh": "她有短头发。"}, {"en": "This story is short.", "zh": "这个故事很短。"}, {"en": "The dog has short legs.", "zh": "这只狗腿很短。"}]},
+            {"id": 87, "word": "small", "syllables": "small", "phonetic": "/smɔːl/", "meaning": "小的", "sentences": [{"en": "I have a small cat.", "zh": "我有一只小猫。"}, {"en": "Her room is small.", "zh": "她的房间很小。"}, {"en": "This cup is small.", "zh": "这个杯子很小。"}, {"en": "A small bug crawled by.", "zh": "一只小虫子爬过。"}, {"en": "He gave me a small gift.", "zh": "他给了我一个小礼物。"}]},
+            {"id": 88, "word": "tall", "syllables": "tall", "phonetic": "/tɔːl/", "meaning": "高的", "sentences": [{"en": "My dad is tall.", "zh": "我爸爸很高。"}, {"en": "She is tall for her age.", "zh": "以她的年龄来说她算高的。"}, {"en": "Tall trees grow in the forest.", "zh": "森林里长着高大的树。"}, {"en": "He wears tall socks.", "zh": "他穿着高筒袜。"}, {"en": "The building is tall.", "zh": "这栋楼很高。"}]}
+          ]
+        },
+        {
+          "name": "colors",
+          "words": [
+            {"id": 89, "word": "orange", "syllables": "or-ange", "phonetic": "/ˈɔːrɪndʒ/", "meaning": "橙色", "sentences": [{"en": "Oranges are orange.", "zh": "橙子是橙色的。"}, {"en": "My favorite color is orange.", "zh": "我最喜欢的颜色是橙色。"}, {"en": "She has an orange backpack.", "zh": "她有一个橙色的背包。"}, {"en": "Pumpkins are orange.", "zh": "南瓜是橙色的。"}, {"en": "Color the fish orange.", "zh": "把鱼涂成橙色。"}]},
+            {"id": 90, "word": "purple", "syllables": "pur-ple", "phonetic": "/ˈpɜːrpəl/", "meaning": "紫色", "sentences": [{"en": "I like purple grapes.", "zh": "我喜欢紫色的葡萄。"}, {"en": "Her dress is purple.", "zh": "她的连衣裙是紫色的。"}, {"en": "My pen is purple.", "zh": "我的钢笔是紫色的。"}, {"en": "Lavender is purple.", "zh": "薰衣草是紫色的。"}, {"en": "Color the flower purple.", "zh": "把花涂成紫色。"}]},
+            {"id": 91, "word": "yellow", "syllables": "yel-low", "phonetic": "/ˈjeloʊ/", "meaning": "黄色", "sentences": [{"en": "The sun is yellow.", "zh": "太阳是黄色的。"}, {"en": "I have a yellow umbrella.", "zh": "我有一把黄色的伞。"}, {"en": "Bananas are yellow.", "zh": "香蕉是黄色的。"}, {"en": "She wore a yellow hat.", "zh": "她戴着一顶黄色的帽子。"}, {"en": "My favorite crayon is yellow.", "zh": "我最喜欢黄色的蜡笔。"}]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Unit 5 Try Your Best",
+      "categories": [
+        {
+          "name": "sports",
+          "words": [
+            {"id": 92, "word": "badminton", "syllables": "bad-min-ton", "phonetic": "/ˈbædmɪntən/", "meaning": "羽毛球", "sentences": [{"en": "I play badminton with my dad.", "zh": "我和爸爸打羽毛球。"}, {"en": "Badminton has a net.", "zh": "羽毛球有网。"}, {"en": "She hit the birdie high.", "zh": "她把羽毛球打得很高。"}, {"en": "We play badminton in the park.", "zh": "我们在公园打羽毛球。"}, {"en": "My racket is new.", "zh": "我的球拍是新的。"}]},
+            {"id": 93, "word": "basketball", "syllables": "bas-ket-ball", "phonetic": "/ˈbæskɪtbɔːl/", "meaning": "篮球", "sentences": [{"en": "I like to play basketball.", "zh": "我喜欢打篮球。"}, {"en": "He shoots the ball.", "zh": "他投篮。"}, {"en": "Basketball is fun.", "zh": "篮球很有趣。"}, {"en": "She dribbles fast.", "zh": "她运球很快。"}, {"en": "We have a basketball hoop.", "zh": "我们有一个篮球框。"}]},
+            {"id": 94, "word": "soccer", "syllables": "soc-cer", "phonetic": "/ˈsɒkər/", "meaning": "足球", "sentences": [{"en": "I play soccer on Saturdays.", "zh": "周六我踢足球。"}, {"en": "She kicked the ball hard.", "zh": "她用力踢球。"}, {"en": "Soccer is my favorite sport.", "zh": "足球是我最喜欢的运动。"}, {"en": "He is a good soccer player.", "zh": "他是一个好的足球运动员。"}, {"en": "We need a soccer ball.", "zh": "我们需要一个足球。"}]},
+            {"id": 95, "word": "swimming", "syllables": "swim-ming", "phonetic": "/ˈswɪmɪŋ/", "meaning": "游泳", "sentences": [{"en": "I go swimming in summer.", "zh": "夏天我去游泳。"}, {"en": "She loves swimming in the pool.", "zh": "她喜欢在泳池里游泳。"}, {"en": "Swimming is good exercise.", "zh": "游泳是很好的运动。"}, {"en": "He learned swimming last year.", "zh": "去年他学了游泳。"}, {"en": "We wear goggles for swimming.", "zh": "我们游泳时戴泳镜。"}]},
+            {"id": 96, "word": "table tennis", "syllables": "table ten-nis", "phonetic": "/ˈteɪbəl tenɪs/", "meaning": "乒乓球", "sentences": [{"en": "I play table tennis in the basement.", "zh": "我在地下室打乒乓球。"}, {"en": "Table tennis is fast.", "zh": "乒乓球很快。"}, {"en": "She hit the ball back.", "zh": "她把球打回去。"}, {"en": "We have a small table tennis set.", "zh": "我们有一套小乒乓球具。"}, {"en": "He is good at table tennis.", "zh": "他乒乓球打得很好。"}]},
+            {"id": 97, "word": "tennis", "syllables": "ten-nis", "phonetic": "/ˈtenɪs/", "meaning": "网球", "sentences": [{"en": "I play tennis with my friend.", "zh": "我和朋友打网球。"}, {"en": "She has a new tennis racket.", "zh": "她有一个新网球拍。"}, {"en": "Tennis balls are yellow.", "zh": "网球是黄色的。"}, {"en": "He hits the ball hard.", "zh": "他用力击球。"}, {"en": "We watch tennis on TV.", "zh": "我们在电视上看网球。"}]},
+            {"id": 98, "word": "volleyball", "syllables": "vol-ley-ball", "phonetic": "/ˈvɒlɪbɔːl/", "meaning": "排球", "sentences": [{"en": "We play volleyball at the beach.", "zh": "我们在海滩打排球。"}, {"en": "She served the ball.", "zh": "她发球了。"}, {"en": "Volleyball needs a net.", "zh": "排球需要网。"}, {"en": "He spiked the ball.", "zh": "他扣球了。"}, {"en": "My hands hurt from volleyball.", "zh": "打排球手都疼了。"}]},
+            {"id": 99, "word": "riding a bike", "syllables": "ri-ding a bike", "phonetic": "/ˈraɪdɪŋ ə baɪk/", "meaning": "骑自行车", "sentences": [{"en": "I like riding a bike.", "zh": "我喜欢骑自行车。"}, {"en": "She fell off riding a bike.", "zh": "她骑自行车摔倒了。"}, {"en": "Riding a bike is fun.", "zh": "骑自行车很有趣。"}, {"en": "He learned riding a bike yesterday.", "zh": "昨天他学了骑自行车。"}, {"en": "We go riding a bike together.", "zh": "我们一起骑自行车。"}]},
+            {"id": 100, "word": "riding a horse", "syllables": "ri-ding a horse", "phonetic": "/ˈraɪdɪŋ ə hɔːrs/", "meaning": "骑马", "sentences": [{"en": "She likes riding a horse.", "zh": "她喜欢骑马。"}, {"en": "Riding a horse is bumpy.", "zh": "骑马很颠簸。"}, {"en": "He is afraid of riding a horse.", "zh": "他害怕骑马。"}, {"en": "I want to try riding a horse.", "zh": "我想试试骑马。"}, {"en": "We saw a girl riding a horse.", "zh": "我们看到一个女孩骑马。"}]}
+          ]
+        },
+        {
+          "name": "action verbs",
+          "words": [
+            {"id": 101, "word": "catching", "syllables": "catch-ing", "phonetic": "/ˈkætʃɪŋ/", "meaning": "接（住）", "sentences": [{"en": "I am good at catching balls.", "zh": "我很会接球。"}, {"en": "She is catching fireflies.", "zh": "她在捉萤火虫。"}, {"en": "He dropped it while catching.", "zh": "他接的时候掉了。"}, {"en": "Catching a fish is hard.", "zh": "抓鱼很难。"}, {"en": "Practice catching every day.", "zh": "每天练习接球。"}]},
+            {"id": 102, "word": "jumping", "syllables": "jump-ing", "phonetic": "/ˈdʒʌmpɪŋ/", "meaning": "跳", "sentences": [{"en": "I like jumping rope.", "zh": "我喜欢跳绳。"}, {"en": "She is jumping in puddles.", "zh": "她在水坑里跳。"}, {"en": "Jumping is fun.", "zh": "跳很有趣。"}, {"en": "He is jumping on the bed.", "zh": "他在床上跳。"}, {"en": "Look at the frog jumping.", "zh": "看那只青蛙在跳。"}]},
+            {"id": 103, "word": "kicking", "syllables": "kick-ing", "phonetic": "/ˈkɪkɪŋ/", "meaning": "踢", "sentences": [{"en": "He is kicking the ball.", "zh": "他在踢球。"}, {"en": "She hurt her foot kicking.", "zh": "她踢的时候伤到了脚。"}, {"en": "Kicking too hard is bad.", "zh": "踢得太用力不好。"}, {"en": "The baby is kicking his legs.", "zh": "宝宝在踢腿。"}, {"en": "Stop kicking the chair.", "zh": "别踢椅子了。"}]},
+            {"id": 104, "word": "swimming", "syllables": "swim-ming", "phonetic": "/ˈswɪmɪŋ/", "meaning": "游泳", "sentences": [{"en": "I am swimming in the lake.", "zh": "我在湖里游泳。"}, {"en": "She is swimming fast.", "zh": "她游泳很快。"}, {"en": "Swimming makes me tired.", "zh": "游泳让我很累。"}, {"en": "He loves swimming underwater.", "zh": "他喜欢潜泳。"}, {"en": "We go swimming every Sunday.", "zh": "我们每个周日去游泳。"}]},
+            {"id": 105, "word": "skating", "syllables": "skate-ing", "phonetic": "/ˈskeɪtɪŋ/", "meaning": "滑冰", "sentences": [{"en": "I like skating on ice.", "zh": "我喜欢在冰上滑冰。"}, {"en": "She fell while skating.", "zh": "她滑冰时摔倒了。"}, {"en": "Skating is hard to learn.", "zh": "滑冰很难学。"}, {"en": "He has new skating shoes.", "zh": "他有新的冰鞋。"}, {"en": "We go skating in winter.", "zh": "冬天我们去滑冰。"}]},
+            {"id": 106, "word": "throwing", "syllables": "throw-ing", "phonetic": "/ˈθroʊɪŋ/", "meaning": "扔", "sentences": [{"en": "He is throwing a ball.", "zh": "他在扔球。"}, {"en": "She is throwing far.", "zh": "她扔得很远。"}, {"en": "Throwing rocks is dangerous.", "zh": "扔石头很危险。"}, {"en": "Practice throwing every day.", "zh": "每天练习投掷。"}, {"en": "The boy is throwing a frisbee.", "zh": "那个男孩在扔飞盘。"}]},
+            {"id": 107, "word": "running", "syllables": "run-ning", "phonetic": "/ˈrʌnɪŋ/", "meaning": "跑", "sentences": [{"en": "I like running fast.", "zh": "我喜欢快跑。"}, {"en": "She is running in the park.", "zh": "她在公园里跑步。"}, {"en": "Running makes me sweat.", "zh": "跑步让我出汗。"}, {"en": "He won the running race.", "zh": "他跑步比赛赢了。"}, {"en": "We go running every morning.", "zh": "我们每天早上跑步。"}]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Unit 6 The Farm",
+      "categories": [
+        {
+          "name": "farm animals",
+          "words": [
+            {"id": 108, "word": "chicken", "syllables": "chick-en", "phonetic": "/ˈtʃɪkɪn/", "meaning": "小鸡", "sentences": [{"en": "The chicken pecks the ground.", "zh": "小鸡在啄地。"}, {"en": "I see a yellow chicken.", "zh": "我看到一只黄色的小鸡。"}, {"en": "Chickens eat corn.", "zh": "小鸡吃玉米。"}, {"en": "The chicken has feathers.", "zh": "小鸡有羽毛。"}, {"en": "A chicken says \"cluck\".", "zh": "小鸡发出“咯咯”声。"}]},
+            {"id": 109, "word": "cow", "syllables": "cow", "phonetic": "/kaʊ/", "meaning": "奶牛", "sentences": [{"en": "The cow eats grass.", "zh": "奶牛吃草。"}, {"en": "Cows say \"moo\".", "zh": "奶牛发出“哞”声。"}, {"en": "I see a black and white cow.", "zh": "我看到一只黑白相间的奶牛。"}, {"en": "The cow gives milk.", "zh": "奶牛产奶。"}, {"en": "A cow has a wet nose.", "zh": "奶牛有湿漉漉的鼻子。"}]},
+            {"id": 110, "word": "dog", "syllables": "dog", "phonetic": "/dɔːɡ/", "meaning": "狗", "sentences": [{"en": "The dog wags its tail.", "zh": "狗摇尾巴。"}, {"en": "My dog likes to run.", "zh": "我的狗喜欢跑。"}, {"en": "Dogs say \"woof\".", "zh": "狗发出“汪”声。"}, {"en": "I have a small dog.", "zh": "我有一只小狗。"}, {"en": "The dog sleeps on the rug.", "zh": "狗睡在毯子上。"}]},
+            {"id": 111, "word": "duck", "syllables": "duck", "phonetic": "/dʌk/", "meaning": "鸭子", "sentences": [{"en": "The duck swims in the pond.", "zh": "鸭子在池塘里游泳。"}, {"en": "Ducks say \"quack\".", "zh": "鸭子发出“嘎嘎”声。"}, {"en": "I see a mother duck.", "zh": "我看到一只鸭妈妈。"}, {"en": "The duck has webbed feet.", "zh": "鸭子有蹼足。"}, {"en": "Ducks eat bread.", "zh": "鸭子吃面包。"}]},
+            {"id": 112, "word": "fox", "syllables": "fox", "phonetic": "/fɒks/", "meaning": "狐狸", "sentences": [{"en": "The fox is red.", "zh": "狐狸是红色的。"}, {"en": "Foxes have bushy tails.", "zh": "狐狸有毛茸茸的尾巴。"}, {"en": "I saw a fox in the woods.", "zh": "我在树林里看到一只狐狸。"}, {"en": "The fox runs fast.", "zh": "狐狸跑得很快。"}, {"en": "A fox says nothing.", "zh": "狐狸不发出声音。"}]},
+            {"id": 113, "word": "frog", "syllables": "frog", "phonetic": "/frɒɡ/", "meaning": "青蛙", "sentences": [{"en": "The frog jumps high.", "zh": "青蛙跳得很高。"}, {"en": "Frogs are green.", "zh": "青蛙是绿色的。"}, {"en": "I see a frog by the pond.", "zh": "我在池塘边看到一只青蛙。"}, {"en": "The frog says \"ribbit\".", "zh": "青蛙发出“呱呱”声。"}, {"en": "Frogs eat bugs.", "zh": "青蛙吃虫子。"}]},
+            {"id": 114, "word": "goat", "syllables": "goat", "phonetic": "/ɡoʊt/", "meaning": "山羊", "sentences": [{"en": "The goat climbs rocks.", "zh": "山羊爬岩石。"}, {"en": "Goats have horns.", "zh": "山羊有角。"}, {"en": "I see a white goat.", "zh": "我看到一只白色的山羊。"}, {"en": "The goat eats grass.", "zh": "山羊吃草。"}, {"en": "Goats say \"maa\".", "zh": "山羊发出“咩”声。"}]},
+            {"id": 115, "word": "horse", "syllables": "horse", "phonetic": "/hɔːrs/", "meaning": "马", "sentences": [{"en": "The horse runs fast.", "zh": "马跑得很快。"}, {"en": "Horses eat hay.", "zh": "马吃干草。"}, {"en": "I see a brown horse.", "zh": "我看到一匹棕色的马。"}, {"en": "The horse has a long tail.", "zh": "马有长长的尾巴。"}, {"en": "I want to ride a horse.", "zh": "我想骑马。"}]},
+            {"id": 116, "word": "pig", "syllables": "pig", "phonetic": "/pɪɡ/", "meaning": "猪", "sentences": [{"en": "The pig rolls in mud.", "zh": "猪在泥里打滚。"}, {"en": "Pigs are pink.", "zh": "猪是粉色的。"}, {"en": "I see a fat pig.", "zh": "我看到一只胖胖的猪。"}, {"en": "The pig says \"oink\".", "zh": "猪发出“哼哼”声。"}, {"en": "Pigs eat a lot.", "zh": "猪吃很多东西。"}]},
+            {"id": 117, "word": "sheep", "syllables": "sheep", "phonetic": "/ʃiːp/", "meaning": "绵羊", "sentences": [{"en": "The sheep has wool.", "zh": "绵羊有羊毛。"}, {"en": "Sheep say \"baa\".", "zh": "绵羊发出“咩”声。"}, {"en": "I see a white sheep.", "zh": "我看到一只白色的绵羊。"}, {"en": "The sheep eats grass.", "zh": "绵羊吃草。"}, {"en": "Sheep are fluffy.", "zh": "绵羊毛茸茸的。"}]}
+          ]
+        },
+        {
+          "name": "action verbs",
+          "words": [
+            {"id": 118, "word": "catch", "syllables": "catch", "phonetic": "/kætʃ/", "meaning": "抓住", "sentences": [{"en": "Can you catch the ball?", "zh": "你能接住球吗？"}, {"en": "I catch bugs in a jar.", "zh": "我用罐子捉虫子。"}, {"en": "She tried to catch the butterfly.", "zh": "她试着抓蝴蝶。"}, {"en": "Catch me if you can.", "zh": "来抓我呀。"}, {"en": "He dropped it, didn't catch.", "zh": "他掉了，没抓住。"}]},
+            {"id": 119, "word": "drink", "syllables": "drink", "phonetic": "/drɪŋk/", "meaning": "喝", "sentences": [{"en": "I drink water every day.", "zh": "我每天喝水。"}, {"en": "She drinks milk at breakfast.", "zh": "她早餐喝牛奶。"}, {"en": "The cow drinks from the trough.", "zh": "奶牛从水槽里喝水。"}, {"en": "Drink your juice, please.", "zh": "请喝你的果汁。"}, {"en": "He drank it all.", "zh": "他全部喝完了。"}]},
+            {"id": 120, "word": "dance", "syllables": "dance", "phonetic": "/dæns/", "meaning": "跳舞", "sentences": [{"en": "I like to dance to music.", "zh": "我喜欢跟着音乐跳舞。"}, {"en": "She dances at the party.", "zh": "她在派对上跳舞。"}, {"en": "Let's dance together.", "zh": "我们一起跳舞吧。"}, {"en": "He danced with his mom.", "zh": "他和妈妈跳舞。"}, {"en": "Dance like no one is watching.", "zh": "像没人看一样跳舞。"}]},
+            {"id": 121, "word": "eat", "syllables": "eat", "phonetic": "/iːt/", "meaning": "吃", "sentences": [{"en": "I eat lunch at school.", "zh": "我在学校吃午饭。"}, {"en": "She eats an apple every day.", "zh": "她每天吃一个苹果。"}, {"en": "The horse eats hay.", "zh": "马吃干草。"}, {"en": "Let's eat dinner together.", "zh": "我们一起吃晚饭吧。"}, {"en": "He ate too much.", "zh": "他吃得太多了。"}]},
+            {"id": 122, "word": "fly", "syllables": "fly", "phonetic": "/flaɪ/", "meaning": "飞", "sentences": [{"en": "Birds fly in the sky.", "zh": "鸟在天上飞。"}, {"en": "I want to fly like a bird.", "zh": "我想像鸟一样飞。"}, {"en": "The butterfly can fly.", "zh": "蝴蝶会飞。"}, {"en": "Look at the plane fly.", "zh": "看飞机在飞。"}, {"en": "Bugs fly around the light.", "zh": "虫子绕着灯光飞。"}]},
+            {"id": 123, "word": "jump", "syllables": "jump", "phonetic": "/dʒʌmp/", "meaning": "跳", "sentences": [{"en": "I can jump high.", "zh": "我能跳得很高。"}, {"en": "She jumps over the puddle.", "zh": "她跳过水坑。"}, {"en": "The frog jumps into the water.", "zh": "青蛙跳进水里。"}, {"en": "Let's jump together.", "zh": "我们一起跳吧。"}, {"en": "He jumped on the bed.", "zh": "他跳到床上。"}]},
+            {"id": 124, "word": "run", "syllables": "run", "phonetic": "/rʌn/", "meaning": "跑", "sentences": [{"en": "I run in the park.", "zh": "我在公园里跑步。"}, {"en": "She runs very fast.", "zh": "她跑得非常快。"}, {"en": "The dog runs after the ball.", "zh": "狗追着球跑。"}, {"en": "Let's run to the tree.", "zh": "我们跑到那棵树那里吧。"}, {"en": "He ran all the way home.", "zh": "他一路跑回家。"}]},
+            {"id": 125, "word": "swim", "syllables": "swim", "phonetic": "/swɪm/", "meaning": "游泳", "sentences": [{"en": "I swim in the pool.", "zh": "我在泳池里游泳。"}, {"en": "Fish swim in the water.", "zh": "鱼在水里游。"}, {"en": "She swims like a fish.", "zh": "她游泳像鱼一样。"}, {"en": "Let's swim to the other side.", "zh": "我们游到对岸吧。"}, {"en": "He swam across the pond.", "zh": "他游过了池塘。"}]},
+            {"id": 126, "word": "talk", "syllables": "talk", "phonetic": "/tɔːk/", "meaning": "说话", "sentences": [{"en": "I talk to my friends.", "zh": "我和朋友聊天。"}, {"en": "She talks on the phone.", "zh": "她在打电话。"}, {"en": "The parrot can talk.", "zh": "鹦鹉会说话。"}, {"en": "Let's talk about school.", "zh": "我们聊聊学校的事吧。"}, {"en": "He talked too much in class.", "zh": "他上课说话太多了。"}]}
+          ]
+        },
+        {
+          "name": "on a farm",
+          "words": [
+            {"id": 127, "word": "barn", "syllables": "barn", "phonetic": "/bɑːrn/", "meaning": "谷仓", "sentences": [{"en": "The horse lives in the barn.", "zh": "马住在谷仓里。"}, {"en": "The barn is red.", "zh": "谷仓是红色的。"}, {"en": "We keep hay in the barn.", "zh": "我们把干草存放在谷仓里。"}, {"en": "The cat sleeps in the barn.", "zh": "猫睡在谷仓里。"}, {"en": "The barn is big.", "zh": "谷仓很大。"}]},
+            {"id": 128, "word": "corn", "syllables": "corn", "phonetic": "/kɔːrn/", "meaning": "玉米", "sentences": [{"en": "Corn grows tall.", "zh": "玉米长得很高。"}, {"en": "I like to eat corn.", "zh": "我喜欢吃玉米。"}, {"en": "The farmer grows corn.", "zh": "农民种玉米。"}, {"en": "Corn is yellow.", "zh": "玉米是黄色的。"}, {"en": "We feed corn to the chickens.", "zh": "我们给鸡喂玉米。"}]},
+            {"id": 129, "word": "farm", "syllables": "farm", "phonetic": "/fɑːrm/", "meaning": "农场", "sentences": [{"en": "My uncle has a farm.", "zh": "我叔叔有一个农场。"}, {"en": "The farm has many animals.", "zh": "农场有很多动物。"}, {"en": "I like to visit the farm.", "zh": "我喜欢去农场玩。"}, {"en": "The farm is big and green.", "zh": "农场又大又绿。"}, {"en": "We see cows on the farm.", "zh": "我们在农场看到奶牛。"}]},
+            {"id": 130, "word": "farmer", "syllables": "farm-er", "phonetic": "/ˈfɑːrmər/", "meaning": "农民", "sentences": [{"en": "The farmer wakes up early.", "zh": "农民起得很早。"}, {"en": "My grandpa is a farmer.", "zh": "我爷爷是农民。"}, {"en": "The farmer feeds the animals.", "zh": "农民喂养动物。"}, {"en": "Farmers work hard.", "zh": "农民工作很辛苦。"}, {"en": "The farmer drives a tractor.", "zh": "农民开拖拉机。"}]},
+            {"id": 131, "word": "field", "syllables": "field", "phonetic": "/fiːld/", "meaning": "田地", "sentences": [{"en": "The cows are in the field.", "zh": "奶牛在田地里。"}, {"en": "The field is green.", "zh": "田地是绿色的。"}, {"en": "Corn grows in the field.", "zh": "玉米在田里生长。"}, {"en": "We run in the field.", "zh": "我们在田地里跑。"}, {"en": "The field is full of flowers.", "zh": "田地里开满了花。"}]},
+            {"id": 132, "word": "grass", "syllables": "grass", "phonetic": "/ɡræs/", "meaning": "草", "sentences": [{"en": "The grass is soft.", "zh": "草软软的。"}, {"en": "Cows eat grass.", "zh": "奶牛吃草。"}, {"en": "I like to lie on the grass.", "zh": "我喜欢躺在草地上。"}, {"en": "The grass is green.", "zh": "草是绿色的。"}, {"en": "Dad cuts the grass.", "zh": "爸爸割草。"}]},
+            {"id": 133, "word": "water", "syllables": "wa-ter", "phonetic": "/ˈwɔːtər/", "meaning": "水", "sentences": [{"en": "The animals drink water.", "zh": "动物喝水。"}, {"en": "Water is clear.", "zh": "水是透明的。"}, {"en": "I drink water when I'm thirsty.", "zh": "我渴的时候喝水。"}, {"en": "The pond has water.", "zh": "池塘里有水。"}, {"en": "Plants need water to grow.", "zh": "植物需要水才能生长。"}]}
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+        let allWords = [];
+        let currentIndex = 0;
+        let currentUnitIndex = 0;
+
+        function flattenWords() {
+            allWords = [];
+            vocabularyData.units.forEach((unit, unitIndex) => {
+                unit.categories.forEach(category => {
+                    category.words.forEach(word => {
+                        allWords.push({
+                            ...word,
+                            unitIndex: unitIndex,
+                            unitName: unit.name,
+                            categoryName: category.name
+                        });
+                    });
+                });
+            });
+        }
+
+        function populateWordSelector() {
+            const selector = document.getElementById('wordSelector');
+            selector.innerHTML = '<option value="">选择单词...</option>';
+
+            vocabularyData.units.forEach((unit, unitIndex) => {
+                const group = document.createElement('optgroup');
+                group.label = unit.name;
+
+                unit.categories.forEach(category => {
+                    category.words.forEach((word) => {
+                        const globalIndex = allWords.findIndex(w => w.id === word.id);
+                        const option = document.createElement('option');
+                        option.value = globalIndex;
+                        option.textContent = `${word.word} - ${word.meaning}`;
+                        group.appendChild(option);
+                    });
+                });
+
+                selector.appendChild(group);
+            });
+        }
+
+        function highlightWord(sentence, word) {
+            const cleanWord = word.toLowerCase().replace(/[^a-z\s]/g, '');
+            const words = cleanWord.split(/\s+/);
+
+            let result = sentence;
+            const highlighted = [];
+
+            words.forEach(w => {
+                if (w.length > 1) {
+                    const regex = new RegExp(`\\b(${w}[s]?|${w}ing|${w}ed)?\\b`, 'gi');
+                    result = result.replace(regex, (match) => {
+                        if (match && !highlighted.includes(match.toLowerCase())) {
+                            highlighted.push(match.toLowerCase());
+                            return `<span class="highlight">${match}</span>`;
+                        }
+                        return match;
+                    });
+                }
+            });
+
+            if (!words.includes(cleanWord)) {
+                const mainRegex = new RegExp(`\\b(${cleanWord}[s]?|${cleanWord}ing|${cleanWord}ed)?\\b`, 'gi');
+                result = result.replace(mainRegex, (match) => {
+                    if (match) {
+                        return `<span class="highlight">${match}</span>`;
+                    }
+                    return match;
+                });
+            }
+
+            return result;
+        }
+
+        function displayWord(index) {
+            if (index < 0 || index >= allWords.length) return;
+
+            currentIndex = index;
+            const word = allWords[index];
+
+            document.getElementById('mainWord').textContent = word.word;
+            document.getElementById('syllable').textContent = word.syllables;
+            document.getElementById('phonetic').textContent = word.phonetic;
+            document.getElementById('meaning').textContent = word.meaning;
+            document.getElementById('progressText').textContent = `单词 ${index + 1} / ${allWords.length}`;
+            document.getElementById('currentWordNum').textContent = index + 1;
+
+            const sentencesList = document.getElementById('sentencesList');
+            sentencesList.innerHTML = '';
+
+            word.sentences.forEach((sentence, idx) => {
+                const highlightedEn = highlightWord(sentence.en, word.word);
+
+                const sentenceItem = document.createElement('div');
+                sentenceItem.className = 'sentence-item';
+                sentenceItem.innerHTML = `
+                    <div class="sentence-en">${idx + 1}. ${highlightedEn}</div>
+                    <div class="sentence-zh">${sentence.zh}</div>
+                `;
+                sentencesList.appendChild(sentenceItem);
+            });
+
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === allWords.length - 1;
+
+            updateUnitNav(word.unitIndex);
+
+            document.getElementById('wordSelector').value = index;
+        }
+
+        function updateUnitNav(unitIndex) {
+            const buttons = document.querySelectorAll('.unit-btn');
+            buttons.forEach((btn, idx) => {
+                btn.classList.toggle('active', idx === unitIndex);
+            });
+            currentUnitIndex = unitIndex;
+        }
+
+        function nextWord() {
+            if (currentIndex < allWords.length - 1) {
+                displayWord(currentIndex + 1);
+            }
+        }
+
+        function prevWord() {
+            if (currentIndex > 0) {
+                displayWord(currentIndex - 1);
+            }
+        }
+
+        function speakWord() {
+            const word = allWords[currentIndex];
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word.word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            flattenWords();
+            populateWordSelector();
+            displayWord(0);
+
+            document.getElementById('prevBtn').addEventListener('click', prevWord);
+            document.getElementById('nextBtn').addEventListener('click', nextWord);
+            document.getElementById('audioBtn').addEventListener('click', speakWord);
+
+            document.getElementById('wordSelector').addEventListener('change', (e) => {
+                if (e.target.value !== '') {
+                    displayWord(parseInt(e.target.value));
+                }
+            });
+
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const unitIndex = parseInt(btn.dataset.unit);
+                    const firstWordInUnit = allWords.findIndex(w => w.unitIndex === unitIndex);
+                    if (firstWordInUnit !== -1) {
+                        displayWord(firstWordInUnit);
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    nextWord();
+                } else if (e.key === 'ArrowLeft') {
+                    prevWord();
+                } else if (e.key === ' ') {
+                    e.preventDefault();
+                    speakWord();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
