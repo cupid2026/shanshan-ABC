@@ -502,15 +502,17 @@ const E_data = {"units":[{"name":"Unit 1 Monster Market","categories":[{"name":"
                 }
 
                 html += `<div class="study-plan-item ${isToday ? 'today' : ''}">
-                    <div class="study-plan-date">${date.slice(5)}</div>
-                    <div class="study-plan-day">${dayInfo}</div>`;
+    <div class="study-plan-date">${date.slice(5)}</div>
+    <div class="study-plan-day">${dayInfo}</div>
+    <div style="display: flex; gap: 3px; justify-content: center; margin: 4px 0;">`;
 
-                tasks.forEach((task, idx) => {
-                    html += `<input type="checkbox" class="study-plan-checkbox" data-date="${date}" data-day="${task.day}" ${task.completed ? 'checked' : ''} ${!isToday ? 'disabled' : ''}>`;
-                });
+tasks.forEach((task, idx) => {
+    html += `<input type="checkbox" class="study-plan-checkbox" data-date="${date}" data-day="${task.day}" ${task.completed ? 'checked' : ''} ${!isToday ? 'disabled' : ''}>`;
+});
 
-                html += `<div class="study-plan-status ${allCompleted ? 'completed' : 'pending'}">${completedCount}/${tasks.length}</div>
-                </div>`;
+html += `</div>
+    <div class="study-plan-status ${allCompleted ? 'completed' : 'pending'}"></div>
+</div>`;
             });
 
             if (grid) grid.innerHTML = html;
