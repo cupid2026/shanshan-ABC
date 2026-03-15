@@ -14,12 +14,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Fredoka', 'Zcool KuaiLe', sans-serif;
-
-
-
-    background: linear-gradient(135deg, #e6f3ff 0%, #d4e6ff 100%);
-
-
+            background: linear-gradient(135deg, #e6f3ff 0%, #d4e6ff 100%);
             min-height: 100vh;
             padding: 20px;
             position: relative;
@@ -374,18 +369,10 @@
 
     <!-- 页面C容器 -->
     <div id="pageC" class="page active-page">
-
-
-
         <header class="header">
             <h1 class="logo">Happy <span>Words C</span></h1>
             <div class="progress-bar" style="display: none;"><span class="progress-text" id="progressTextC">单词 1 / 133</span></div>
         </header>
-
-
-
-
-
         <nav class="unit-nav" id="unitNavC">
             <button class="unit-btn unit-1 active" data-unit="0">Unit 1 Hello!</button>
             <button class="unit-btn unit-2" data-unit="1">Unit 2 Clora's Class</button>
@@ -408,7 +395,7 @@
             <div class="study-plan-grid" id="studyPlanGridC"></div>
             <div class="study-plan-stats">
                 <span>开始日期: <span id="startDateDisplayC">--</span></span>
-                <span>今日完成: <span id="completedCountDisplayC">0</span>/6</span>
+                <span>累计完成: <span id="completedCountDisplayC">0</span></span>
             </div>
         </div>
         <main class="word-card">
@@ -428,12 +415,7 @@
 
     <!-- 页面D容器 -->
     <div id="pageD" class="page">
-
-
         <header class="header"><h1 class="logo">Happy <span>Words D</span></h1><div class="progress-bar" style="display: none;"><span class="progress-text" id="progressTextD">单词 1 / 170</span></div></header>
-
-
-
         <nav class="unit-nav" id="unitNavD">
             <button class="unit-btn unit-1 active" data-unit="0">Unit 1 欢迎回家</button>
             <button class="unit-btn unit-2" data-unit="1">Unit 2 购物清单</button>
@@ -447,7 +429,7 @@
             <div class="study-plan-header"><div class="study-plan-title"><i class="fas fa-brain"></i> 复习计划 (6天)</div><div class="study-plan-buttons"><button class="start-study-btn" id="startStudyBtnD"><i class="fas fa-play"></i> 开始学习</button>
 <button class="reset-study-btn" id="resetStudyBtnD"><i class="fas fa-redo-alt"></i> 重新开始</button>
 </div></div>
-            <div class="study-plan-grid" id="studyPlanGridD"></div><div class="study-plan-stats"><span>开始日期: <span id="startDateDisplayD">--</span></span><span>今日完成: <span id="completedCountDisplayD">0</span>/6</span></div>
+            <div class="study-plan-grid" id="studyPlanGridD"></div><div class="study-plan-stats"><span>开始日期: <span id="startDateDisplayD">--</span></span><span>累计完成: <span id="completedCountDisplayD">0</span></span></div>
         </div>
         <main class="word-card">
             <div class="decoration decoration-1">⭐</div><div class="decoration decoration-2">✏️</div>
@@ -476,7 +458,7 @@
             <div class="study-plan-header"><div class="study-plan-title"><i class="fas fa-brain"></i> 复习计划 (6天)</div><div class="study-plan-buttons"><button class="start-study-btn" id="startStudyBtnE"><i class="fas fa-play"></i> 开始学习</button>
 <button class="reset-study-btn" id="resetStudyBtnE"><i class="fas fa-redo-alt"></i> 重新开始</button>
 </div></div>
-            <div class="study-plan-grid" id="studyPlanGridE"></div><div class="study-plan-stats"><span>开始日期: <span id="startDateDisplayE">--</span></span><span>今日完成: <span id="completedCountDisplayE">0</span>/6</span></div>
+            <div class="study-plan-grid" id="studyPlanGridE"></div><div class="study-plan-stats"><span>开始日期: <span id="startDateDisplayE">--</span></span><span>累计完成: <span id="completedCountDisplayE">0</span></span></div>
         </div>
         <main class="word-card">
             <div class="decoration decoration-1">⭐</div><div class="decoration decoration-2">✏️</div>
@@ -554,26 +536,7 @@
     // ========== 5. 星星管理器 ==========
     const StarManager = {
         starStyles: ['⭐', '🌟', '✨', '💫', '⭐', '🌟', '✨', '💫'],
-
-
-
-
-        colors: ['#FFD700', // 金色
-    '#FFA500', // 橙色
-    '#FF69B4', // 亮粉色
-    '#00FFFF', // 青色
-    '#FF4500', // 橙红色
-    '#FFFF00', // 亮黄色
-    '#FF1493', // 深粉色
-    '#00FF00', // 亮绿色
-    '#FF6347', // 番茄红
-    '#1E90FF', // 亮蓝色
-    '#FF00FF', // 品红
-    '#FFD700'  // 金色
-
-],
-
-
+        colors: ['#FFD700', '#FFA500', '#FF69B4', '#00FFFF', '#FF4500', '#FFFF00', '#FF1493', '#00FF00', '#FF6347', '#1E90FF', '#FF00FF', '#FFD700'],
         bottomStarsCount: 0,
         storageKey: 'collectedStars',
 
@@ -637,32 +600,7 @@
             localStorage.setItem(this.storageKey, JSON.stringify(stars));
         },
 
-        createFallingStar: function() {
-            const star = document.createElement('div');
-            star.className = 'falling-star';
-            const starSymbol = this.starStyles[Math.floor(Math.random() * this.starStyles.length)];
-            star.textContent = starSymbol;
-            const color = this.colors[Math.floor(Math.random() * this.colors.length)];
-            star.style.color = color;
-            star.style.textShadow = `0 0 5px ${color}`; 
-            const size = 25 + Math.floor(Math.random() * 25);
-            star.style.fontSize = size + 'px';
-            const side = Math.random() < 0.5 ? 'left' : 'right';
-            if (side === 'left') {
-                star.style.left = Math.random() * 200 + 'px';
-            } else {
-                star.style.left = (window.innerWidth - 200 - Math.random() * 200) + 'px';
-            }
-            star.style.top = '-50px';
-            const duration = 3 + Math.random() * 4;
-            star.style.animation = `fall ${duration}s linear forwards`;
-            this.container.appendChild(star);
-
-            star.addEventListener('animationend', () => {
-                star.remove();
-                this.addBottomStar(side);
-            });
-        },
+   
 
         addBottomStar: function(side) {
             this.bottomStarsCount++;
@@ -676,36 +614,37 @@
             const size = 16 + Math.floor(Math.random() * 24);
             star.style.fontSize = size + 'px';
 
-
             // 随机位置
-    if (side === 'left') {
-        // 左侧随机位置 20px 到 180px 之间
-        const leftPos = 20 + Math.random() * 160;
-        star.style.left = leftPos + 'px';
-        // 随机上下位置 10px 到 100px 之间
-        const bottomPos = 10 + Math.random() * 90;
-        star.style.bottom = bottomPos + 'px';
-        this.starsLeft.appendChild(star);
-    } else {
-        // 右侧随机位置 (窗口宽度 - 200px) 到 (窗口宽度 - 40px) 之间
-        const rightPos = window.innerWidth - 200 + Math.random() * 160;
-        star.style.left = rightPos + 'px';
-        // 随机上下位置 10px 到 100px 之间
-        const bottomPos = 10 + Math.random() * 90;
-        star.style.bottom = bottomPos + 'px';
-        this.starsRight.appendChild(star);
-    }
-
-
+            if (side === 'left') {
+                const leftPos = 20 + Math.random() * 160;
+                star.style.left = leftPos + 'px';
+                const bottomPos = 10 + Math.random() * 90;
+                star.style.bottom = bottomPos + 'px';
+                this.starsLeft.appendChild(star);
+            } else {
+                const rightPos = window.innerWidth - 200 + Math.random() * 160;
+                star.style.left = rightPos + 'px';
+                const bottomPos = 10 + Math.random() * 90;
+                star.style.bottom = bottomPos + 'px';
+                this.starsRight.appendChild(star);
+            }
 
             star.style.animationDelay = Math.random() * 2 + 's';
             this.saveStars();
         },
 
+
+// 👇 在这里添加 addStar 方法
+addStar: function() {
+    const side = Math.random() < 0.5 ? 'left' : 'right';
+    this.addBottomStar(side);
+},
+
+
         createMultipleStars: function(count) {
             for (let i = 0; i < count; i++) {
                 setTimeout(() => {
-                    this.createFallingStar();
+                    this.addStar();
                 }, i * 200);
             }
         },
@@ -726,7 +665,6 @@
         const suffix = bookId;
         const startBtn = document.getElementById(`startStudyBtn${suffix}`);
         const resetBtn = document.getElementById(`resetStudyBtn${suffix}`);
-        const clearStarsBtn = document.getElementById(`clearStarsBtn${suffix}`);
         const grid = document.getElementById(`studyPlanGrid${suffix}`);
         const startDateSpan = document.getElementById(`startDateDisplay${suffix}`);
         const completedSpan = document.getElementById(`completedCountDisplay${suffix}`);
@@ -775,18 +713,13 @@
             const plan = planData.plan;
             const sortedDates = Object.keys(plan).sort();
 
-            let html = '', todayCompleted = 0, totalToday = 0;
+            let html = '';
             
             sortedDates.forEach(date => {
                 const tasks = plan[date];
                 const isToday = (date === today);
                 const dayInfo = tasks.map(t => `第${t.day}天`).join('/');
                 const completedCount = tasks.filter(t => t.completed).length;
-                
-                if (isToday) { 
-                    totalToday = tasks.length; 
-                    todayCompleted = completedCount; 
-                }
 
                 html += `<div class="study-plan-item ${isToday ? 'today' : ''}">
                     <div class="study-plan-date">${date.slice(5)}</div>
@@ -804,7 +737,21 @@
             
             if (grid) grid.innerHTML = html;
             if (startDateSpan) startDateSpan.innerText = planData.startDate;
-            if (completedSpan) completedSpan.innerText = `${todayCompleted}/${totalToday || 6}`;
+            
+            // 计算累计完成的任务数（所有日期的已完成任务总和）
+            if (completedSpan) {
+                let totalCompleted = 0;
+                if (planData && planData.plan) {
+                    Object.values(planData.plan).forEach(tasks => {
+                        if (Array.isArray(tasks)) {
+                            tasks.forEach(task => {
+                                if (task && task.completed) totalCompleted++;
+                            });
+                        }
+                    });
+                }
+                completedSpan.innerText = `${totalCompleted}/6`;
+            }
 
             // 绑定复选框
             grid.querySelectorAll('.study-plan-checkbox:not(:disabled)').forEach(cb => {
@@ -817,7 +764,7 @@
                         task.completed = this.checked; 
                         localStorage.setItem(storageKey, JSON.stringify(planData)); 
                         if (this.checked && StarManager) {
-                            StarManager.createFallingStar();
+                            StarManager.addStar();
                         }
                     }
                     renderPlan();
@@ -827,13 +774,7 @@
             renderTodayTasks();
         }
 
-     
-
-
-
-
-
-   function renderTodayTasks() {
+        function renderTodayTasks() {
             const today = getTodayKey();
             let allTodayTasks = [];
             
@@ -846,7 +787,8 @@
                             ...task, 
                             word: word.word, 
                             wordId: word.id, 
-                            meaning: word.meaning 
+                            meaning: word.meaning,
+                            wordIndex: allWords.findIndex(w => w.id === word.id)
                         }); 
                     });
                 }
@@ -856,13 +798,8 @@
                 let tasksHtml = '<div class="today-tasks-header"><div class="today-tasks-title"><i class="fas fa-tasks"></i> 今日复习任务</div><div class="today-tasks-stats"><span>已完成: ' + allTodayTasks.filter(t => t.completed).length + '/' + allTodayTasks.length + '</span></div></div><div class="today-tasks-list">';
                 
                 allTodayTasks.sort((a,b)=>a.day-b.day).forEach(task => {
-
-// 找到单词在数组中的索引
-        const wordIndex = allWords.findIndex(w => w.id === task.wordId);
-
- tasksHtml += `<div class="today-task-item" data-word-index="${wordIndex}" style="cursor: pointer;">
-
-                           <div class="task-sentence-info">
+                    tasksHtml += `<div class="today-task-item" data-word-index="${task.wordIndex}" style="cursor: pointer;">
+                        <div class="task-sentence-info">
                             <span class="task-sentence-id">${task.day}</span>
                             <span class="task-theme">${task.word} · 第${task.day}天复习</span>
                             <span class="task-status ${task.completed ? 'completed' : 'pending'}">${task.completed ? '已完成' : '待复习'}</span>
@@ -872,61 +809,28 @@
                         </button>
                     </div>`;
                 });
-
-
-
-
                 
                 tasksHtml += '</div>';
                 todayTasksPanel.innerHTML = tasksHtml;
 
- // ==== 新增：点击跳转事件 ====
-    todayTasksPanel.querySelectorAll('.today-task-item[data-word-index]').forEach(item => {
-        item.addEventListener('click', function(e) {
-            // 如果点击的是按钮，不触发跳转
-            if (e.target.closest('.task-action-btn')) return;
-            
-            const wordIndex = parseInt(this.dataset.wordIndex);
-            if (!isNaN(wordIndex)) {
-                // 调用当前册的跳转函数
-                const jumpFunc = window[`jumpToWord_${bookId}`];
-                if (jumpFunc) {
-                    jumpFunc(wordIndex);
-                }
-            }
-        });
-    });
-
-
-
-
- // 添加点击跳转事件
-        todayTasksPanel.querySelectorAll('.today-task-item[data-word-index]').forEach(item => {
-            item.addEventListener('click', function(e) {
-                // 如果点击的是按钮，不触发跳转
-                if (e.target.closest('.task-action-btn')) return;
-                
-                const wordIndex = parseInt(this.dataset.wordIndex);
-                if (!isNaN(wordIndex)) {
-                    // 调用当前册的displayWord函数跳转到指定单词
-                    if (typeof displayWord === 'function') {
-                        displayWord(wordIndex);
-                    } else {
-                        // 如果displayWord不在作用域内，需要通过其他方式跳转
-                        // 这里假设有一个全局的跳转函数
-                        jumpToWord(bookId, wordIndex);
-                    }
-                }
-            });
-        });
-
-
+                // 点击跳转事件
+                todayTasksPanel.querySelectorAll('.today-task-item[data-word-index]').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        if (e.target.closest('.task-action-btn')) return;
+                        const wordIndex = parseInt(this.dataset.wordIndex);
+                        if (!isNaN(wordIndex)) {
+                            const jumpFunc = window[`jumpToWord_${bookId}`];
+                            if (jumpFunc) jumpFunc(wordIndex);
+                        }
+                    });
+                });
 
                 todayTasksPanel.querySelectorAll('.task-action-btn:not(.completed)').forEach(btn => {
                     const newBtn = btn.cloneNode(true); 
                     btn.parentNode.replaceChild(newBtn, btn);
                     
                     newBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
                         const wordId = e.currentTarget.dataset.wordId;
                         const day = e.currentTarget.dataset.day;
                         const key = `studyPlan_${bookId}_word_${wordId}`;
@@ -937,9 +841,7 @@
                             if (task) { 
                                 task.completed = true; 
                                 localStorage.setItem(key, JSON.stringify(data)); 
-                                if (StarManager) {
-                                    StarManager.createFallingStar();
-                                }
+                                if (StarManager) StarManager.addStar();
                             }
                             const currentKey = `studyPlan_${bookId}_word_${currentWord.id}`;
                             planData = JSON.parse(localStorage.getItem(currentKey)) || null;
@@ -982,19 +884,11 @@
                 }
                 if (confirm(`确定要重置单词 "${currentWord.word}" 的学习计划吗？所有进度将丢失。`)) {
                     localStorage.removeItem(storageKey);
-
-
-
-
-
-         
                     planData = null;
                     renderPlan();
                 }
             });
         }
-
-
 
         renderPlan();
     }
@@ -1049,12 +943,10 @@
             
             if (wordSelector) wordSelector.value = index;
             
-            // 每次切换重新初始化计划面板
             initStudyPlan(bookId, allWords, currentIndex);
         }
 
-// 添加全局跳转函数
-window[`jumpToWord_${bookId}`] = displayWord;
+        window[`jumpToWord_${bookId}`] = displayWord;
 
         if (unitNav) {
             Array.from(unitNav.children).forEach((btn, idx) => { 
@@ -1094,13 +986,6 @@ window[`jumpToWord_${bookId}`] = displayWord;
         }
         
         displayWord(0);
-
-
-
-
-// 👇 在这里添加这行代码
-    window[`jumpToWord_${bookId}`] = displayWord;
-
     }
 
     // ========== 8. 启动所有册 ==========
