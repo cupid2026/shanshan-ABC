@@ -322,6 +322,17 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
+
+/* 新星星闪烁动画 - 添加在这里 */
+@keyframes newStarFlash {
+    0% { transform: scale(1); opacity: 0.3; }
+    20% { transform: scale(2.8); opacity: 1; filter: drop-shadow(0 0 20px gold); }  /* 快速放大 */
+    50% { transform: scale(2.2); opacity: 0.95; filter: drop-shadow(0 0 15px gold); } /* 保持较大 */
+    80% { transform: scale(1.5); opacity: 0.9; filter: drop-shadow(0 0 8px gold); }  /* 缓慢缩小 */
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+
         /* 确保主要内容区域不受星星影响 */
         .container {
             position: relative;
@@ -535,7 +546,7 @@
 
     // ========== 5. 星星管理器 ==========
     const StarManager = {
-        starStyles: ['⭐', '🌟', '✨', '💫', '⭐', '🌟', '✨', '💫'],
+        starStyles: ['⭐', '🌟', '✨',  '⭐', '🌟', '✨'],
         colors: ['#FFD700', '#FFA500', '#FF69B4', '#00FFFF', '#FF4500', '#FFFF00', '#FF1493', '#00FF00', '#FF6347', '#1E90FF', '#FF00FF', '#FFD700'],
         bottomStarsCount: 0,
         storageKey: 'collectedStars',
@@ -568,6 +579,7 @@
             star.style.color = starData.color;
             star.style.fontSize = starData.size + 'px';
             star.style.left = starData.left + 'px';
+star.style.bottom = starData.bottom + 'px';  // 👈 添加这一行
             star.style.animationDelay = Math.random() * 2 + 's';
             
             if (starData.side === 'left') {
@@ -585,6 +597,7 @@
                     color: star.style.color,
                     size: parseInt(star.style.fontSize),
                     left: parseInt(star.style.left),
+bottom: parseInt(star.style.bottom),  // 确保保存了 bottom 位置
                     side: 'left'
                 });
             });
@@ -594,6 +607,7 @@
                     color: star.style.color,
                     size: parseInt(star.style.fontSize),
                     left: parseInt(star.style.left),
+bottom: parseInt(star.style.bottom),  // 确保保存了 bottom 位置
                     side: 'right'
                 });
             });
@@ -610,54 +624,66 @@
             star.textContent = starSymbol;
             const color = this.colors[Math.floor(Math.random() * this.colors.length)];
             star.style.color = color;
-            star.style.textShadow = `0 0 8px ${color}`;
+           // 添加多重阴影，创造立体感
+star.style.textShadow = `
+    0 0 5px ${color},
+    0 0 15px ${color},
+    2px 2px 3px rgba(0,0,0,0.3),
+    -1px -1px 2px rgba(255,255,255,0.5)
+`;
             const size = 16 + Math.floor(Math.random() * 24);
             star.style.fontSize = size + 'px';
 
-            // 随机位置
-            if (side === 'left') {
-                const leftPos = 20 + Math.random() * 160;
-                star.style.left = leftPos + 'px';
-                const bottomPos = 10 + Math.random() * 90;
-                star.style.bottom = bottomPos + 'px';
-                this.starsLeft.appendChild(star);
-            } else {
-                const rightPos = window.innerWidth - 200 + Math.random() * 160;
-                star.style.left = rightPos + 'px';
-                const bottomPos = 10 + Math.random() * 90;
-                star.style.bottom = bottomPos + 'px';
-                this.starsRight.appendChild(star);
-            }
+           // 随机位置 - 从底部到顶部全范围
+if (side === 'left') {
+    const leftPos = 20 + Math.random() * 160;
+    star.style.left = leftPos + 'px';
+    const bottomPos = 10 + Math.random() * (window.innerHeight - 100);  // 👈 改为全高度
+    star.style.bottom = bottomPos + 'px';
+    this.starsLeft.appendChild(star);
+} else {
+    const rightPos = window.innerWidth - 200 + Math.random() * 160;
+    star.style.left = rightPos + 'px';
+    const bottomPos = 10 + Math.random() * (window.innerHeight - 100);  // 👈 改为全高度
+    star.style.bottom = bottomPos + 'px';
+    this.starsRight.appendChild(star);
+}
 
-            star.style.animationDelay = Math.random() * 2 + 's';
+          // 👇 这些代码要放在这里，在 star 创建之后
+    // 添加一个短暂的闪烁动画，让新星星更容易被注意到
+    star.style.animation = 'newStarFlash 2s ease-out';
+    setTimeout(() => {
+        star.style.animation = 'twinkle 2s ease-in-out infinite';
+    }, 2000);
+
+
+  star.style.animationDelay = Math.random() * 2 + 's';
+
             this.saveStars();
         },
 
 
-// 👇 在这里添加 addStar 方法
+// 👇 这个 addStar 方法放在 addBottomStar 后面
 addStar: function() {
     const side = Math.random() < 0.5 ? 'left' : 'right';
     this.addBottomStar(side);
 },
 
-
-        createMultipleStars: function(count) {
-            for (let i = 0; i < count; i++) {
-                setTimeout(() => {
-                    this.addStar();
-                }, i * 200);
-            }
-        },
-
+createMultipleStars: function(count) {
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            this.addStar();
+        }, i * 200);
+    }
+},
         resetStars: function() {
             this.starsLeft.innerHTML = '';
             this.starsRight.innerHTML = '';
             this.container.innerHTML = '';
             this.bottomStarsCount = 0;
             localStorage.removeItem(this.storageKey);
-        }
-    };
-
+        },
+};
     // ========== 6. 艾宾浩斯计划函数 ==========
     const REVIEW_INTERVALS = [0, 1, 2, 4, 7, 15];
 
@@ -751,6 +777,17 @@ addStar: function() {
                     });
                 }
                 completedSpan.innerText = `${totalCompleted}/6`;
+
+// 👇 在这里添加检查
+    // 检查是否全部6天计划都完成了
+    if (totalCompleted === 6) {
+        // 6天计划全部完成，添加20颗星星庆祝
+        StarManager.createMultipleStars(20);
+    }
+
+
+
+
             }
 
             // 绑定复选框
@@ -847,6 +884,13 @@ addStar: function() {
                             planData = JSON.parse(localStorage.getItem(currentKey)) || null;
                             renderPlan();
                             renderTodayTasks();
+// 👇 在这里添加检查
+        // 检查今日任务是否全部完成
+        const allCompleted = allTodayTasks.every(t => t.completed);
+        if (allCompleted && allTodayTasks.length > 0) {
+            // 今日所有任务都完成了，添加10颗星星作为奖励
+            StarManager.createMultipleStars(10);
+        }
                         }
                     });
                 });
